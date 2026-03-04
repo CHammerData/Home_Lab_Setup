@@ -1,8 +1,8 @@
 # Home Lab Media Server Setup
 
-This repository contains the `docker-compose.yml` and configuration instructions for deploying a comprehensive, containerized home media server.
+This repository contains the `docker-compose.yml` and configuration instructions for deploying my containerized home media server.
 
-The setup is designed around two primary machines: a TrueNAS SCALE server for storage (NAS) and a powerful Ubuntu server for running applications (App Server), featuring GPU passthrough for hardware-accelerated video transcoding.
+The setup is designed around two primary machines: a TrueNAS SCALE server for storage (NAS) and a Ubuntu server for running applications leveraging GPU passthrough for hardware-accelerated video transcoding.
 
 ## Architecture Diagram
 
@@ -14,47 +14,60 @@ graph TD
     Switch <--> Desktop[Main Desktop\nRTX 4070 Super]
     Switch <--> NAS[NAS Node\ni3-12100 / 4x 12TB HDD]
     Switch <--> AppServer[App Server Node\ni5-13500 / RTX 2070 Super]
+    Switch <--> Designated_HA[Designated Home Assistant Machine]
+    Switch <--> RPI1[Raspberry Pi 1]
+    Switch <--> RPI2[Raspberry Pi 2]
 
-    subgraph NAS Machine
-        NAS
-        Storage[ZFS Storage Pool]
-        Shares[NFS & SMB Shares]
-        Storage --> Shares
-    end
+    subgraph Rack [In Rack]
+        Switch
 
-    subgraph App Server Machine
-        AppServer
-        OS[Ubuntu Server]
-        Docker[Docker Engine]
-        OS --> Docker
-        
-        Tailscale[Tailscale VPN\nMesh Network]
-        Jellyfin[Jellyfin\nGPU Passthrough]
-        
-        subgraph "Secure Download Pipeline"
-            direction LR
-            Gluetun[Gluetun VPN] --> qBit[qBittorrent]
+        subgraph NAS Machine
+            NAS
+            Storage[ZFS Storage Pool]
+            Shares[NFS & SMB Shares]
+            Storage --> Shares
+
         end
-        
-        subgraph "Media Automation (*Arr Stack)"
-            Prowlarr -.-> Radarr
-            Prowlarr -.-> Sonarr
-            Prowlarr -.-> Lidarr
-        end
-        
-        Docker --> Tailscale
-        Docker --> Jellyfin
-        Docker --> VPN_Pipeline
-        Docker --> Media_Automation
-    end
 
-    Shares -.->|Mounted via fstab| OS
-    Tailscale -.->|Secure Remote Access| Desktop
-    qBit --> Storage(NAS Downloads Folder)
-    Radarr --> Storage
-    Sonarr --> Storage
-    Lidarr --> Storage
-    Jellyfin --> Storage(NAS Media Folder)
+        subgraph App Server Machine
+            AppServer
+            OS[Ubuntu Server]
+            Docker[Docker Engine]
+            OS --> Docker
+
+            Tailscale[Tailscale VPN\nMesh Network]
+            Jellyfin[Jellyfin\nGPU Passthrough]
+
+            subgraph VPN_Pipeline
+                Gluetun[Gluetun VPN] --> qBit[qBittorrent]
+            end
+
+            subgraph Media_Automation
+                Prowlarr -.-> Radarr
+                Prowlarr -.-> Sonarr
+                Prowlarr -.-> Lidarr
+            end
+
+            Docker --> Tailscale
+            Docker --> Jellyfin
+            Docker --> VPN_Pipeline
+            Docker --> Media_Automation
+        end
+
+        subgraph Main Desktop Machine
+            Desktop
+        end
+
+        subgraph Additional Compute Edges
+            Designated_HA
+            RPI1
+            RPI2
+        end
+
+        Shares -.->|Mounted via fstab| OS
+        Tailscale -.->|Remote Admin| Desktop
+    end
+    style Rack fill: #111111
 ```
 
 ## Services
@@ -63,8 +76,8 @@ This stack includes the following services, orchestrated by Docker Compose:
 
 | Service | Port | Description |
 | :--- | :--- | :--- |
-| **Portainer** | `9000` | A lightweight management UI for Docker environments. |
-| **Tailscale** | `host` | Creates a secure mesh network (wireguard VPN) for easy remote access. |
+| **Portainer** | `9000` | Lightweight management UI for Docker environments. |
+| **Tailscale** | `host` | Secure mesh network (wireguard VPN) for remote access. |
 | **Gluetun** | `8080` | VPN client container. All of qBittorrent's traffic is routed through it. |
 | **qBittorrent**| `n/a` | Torrent client. Its network is locked to the Gluetun container. |
 | **Prowlarr** | `9696` | Indexer manager for the *Arr stack. |
@@ -76,9 +89,9 @@ This stack includes the following services, orchestrated by Docker Compose:
 ## Key Features
 
 - **Secure Download Pipeline:** qBittorrent is configured with a "network kill-switch." It is forced to use the network of the `gluetun` container. If the VPN connection drops, qBittorrent loses all internet connectivity, preventing any IP leaks.
-- **Hardware Transcoding:** The Jellyfin service is configured to use an Nvidia GPU (`RTX 2070 Super` in this setup) for hardware-accelerated video transcoding, ensuring smooth playback on client devices without heavily loading the CPU.
+- **Hardware Transcoding:** The Jellyfin service is configured to use an Nvidia GPU (`RTX 2070 Super` I had spare) for hardware-accelerated video transcoding, ensuring smooth playback on client devices without heavily loading the CPU.
 - **Centralized Management:** The entire *Arr stack (Radarr, Sonarr, Lidarr) is managed through Prowlarr, simplifying indexer configuration.
-- **Remote Access:** Tailscale provides secure, zero-config access to the App Server and its services from anywhere.
+- **Remote Access:** Tailscale provides secure access to the App Server and its services from anywhere.
 
 ## Setup Instructions
 
