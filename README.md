@@ -33,7 +33,7 @@ graph TD
         
         subgraph "Secure Download Pipeline"
             direction LR
-            Internet --> Gluetun[Gluetun VPN] --> qBit[qBittorrent]
+            Gluetun[Gluetun VPN] --> qBit[qBittorrent]
         end
         
         subgraph "Media Automation (*Arr Stack)"
