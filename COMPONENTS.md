@@ -28,7 +28,7 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Switch | TP-Link 24-Port Easy Smart Managed (TL-SG1024DE) | 1 | $120.00 | $120.00 | To Order | Managed. Supports VLANs for network segmentation. |
 | Patch Panel | TRENDnet 24-Port Blank Keystone 1U + Cat6 | 1 | $120.00 | $120.00 | To Order | |
 | Rack Enclosure | — | 1 | Owned | $0.00 | Owned | Existing rack — verify U space before ordering chassis. |
-| UPS | — | — | — | — | To Order | Strongly recommended for NAS. Consider APC BR1500G or equivalent. |
+| UPS | — | — | — | — | Deferred | Skipping initially. Revisit if drives experience corruption after unexpected power loss. |
 
 ---
 
@@ -81,7 +81,7 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | # | Item | Decision Needed |
 | :--- | :--- | :--- |
 | ~~1~~ | ~~Desktop rack chassis~~ | ~~Resolved~~ — GPU is 266mm, confirmed fits RSV-L4500U. |
-| 2 | UPS | Select model and add to order. |
+| ~~2~~ | ~~UPS~~ | ~~Resolved~~ — deferred. Revisit after initial build. |
 | ~~3~~ | ~~Switch~~ | ~~Resolved~~ — upgrading to TL-SG1024DE (managed). |
 
 ---
