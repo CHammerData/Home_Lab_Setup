@@ -1,5 +1,3 @@
-version: "3.8"
-
 # ---------------------------------------------------------
 # NETWORKS
 # ---------------------------------------------------------
@@ -9,11 +7,20 @@ networks:
     driver: bridge
 
 # ---------------------------------------------------------
+# NAMED VOLUMES
+# ---------------------------------------------------------
+volumes:
+  prometheus_data:
+  grafana_data:
+
+# ---------------------------------------------------------
 # SERVICES
 # ---------------------------------------------------------
 services:
 
+  # -------------------------------------------------------
   # 1. MANAGEMENT & ACCESS
+  # -------------------------------------------------------
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
@@ -28,13 +35,18 @@ services:
       - 9000:9000
     networks:
       - home_lab_net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   tailscale:
     image: tailscale/tailscale:latest
     container_name: tailscale
     hostname: app-server
     restart: unless-stopped
-    network_mode: host # Allows Tailscale to route to your whole network
+    network_mode: host
     volumes:
       - ./config/tailscale:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
@@ -42,7 +54,51 @@ services:
       - net_admin
       - sys_module
 
-  # 2. SECURE DOWNLOAD PIPELINE
+  # -------------------------------------------------------
+  # 2. REVERSE PROXY & AUTHENTICATION
+  # -------------------------------------------------------
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - 80:80    # HTTP (redirects to HTTPS)
+      - 443:443  # HTTPS
+      - 81:81    # NPM Admin UI
+    volumes:
+      - ./config/npm/data:/data
+      - ./config/npm/letsencrypt:/etc/letsencrypt
+    networks:
+      - home_lab_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:81/api/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  authelia:
+    image: authelia/authelia:latest
+    container_name: authelia
+    restart: unless-stopped
+    environment:
+      - TZ=${TIMEZONE}
+    volumes:
+      - ./config/authelia:/config
+    ports:
+      - 9091:9091
+    networks:
+      - home_lab_net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9091/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # -------------------------------------------------------
+  # 3. SECURE DOWNLOAD PIPELINE
+  # -------------------------------------------------------
   gluetun:
     image: qmcgaw/gluetun:latest
     container_name: gluetun
@@ -52,23 +108,33 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     ports:
-      - 8080:8080 # qBittorrent Web UI
-      - 6881:6881 # qBittorrent TCP
+      - 8080:8080     # qBittorrent Web UI (forwarded through VPN)
+      - 6881:6881     # qBittorrent TCP
       - 6881:6881/udp # qBittorrent UDP
     environment:
-      - VPN_SERVICE_PROVIDER=custom # Change to your VPN provider (e.g., protonvpn, mullvad)
+      - VPN_SERVICE_PROVIDER=custom # Change to your provider (e.g., protonvpn, mullvad)
       - OPENVPN_USER=${VPN_USER}
       - OPENVPN_PASSWORD=${VPN_PASS}
     volumes:
       - ./config/gluetun:/gluetun
     networks:
       - home_lab_net
+    healthcheck:
+      # Uses Gluetun's built-in HTTP control server to verify the VPN tunnel is active
+      test: ["CMD-SHELL", "wget -q --tries=1 --spider http://localhost:8000/v1/publicip/ip || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 30s
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     restart: unless-stopped
-    network_mode: "service:gluetun" # Forces all traffic through the VPN container
+    network_mode: "service:gluetun" # Forces ALL traffic through the VPN container
+    depends_on:
+      gluetun:
+        condition: service_healthy # Will not start until the VPN tunnel is confirmed active
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -78,7 +144,28 @@ services:
       - ./config/qbittorrent:/config
       - /path/to/your/nas/downloads:/downloads # Update this path
 
-  # 3. THE *ARR AUTOMATION STACK
+  unpackerr:
+    image: golift/unpackerr:latest
+    container_name: unpackerr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+      - UN_SONARR_0_URL=http://sonarr:8989
+      - UN_SONARR_0_API_KEY=${SONARR_API_KEY}
+      - UN_RADARR_0_URL=http://radarr:7878
+      - UN_RADARR_0_API_KEY=${RADARR_API_KEY}
+      - UN_LIDARR_0_URL=http://lidarr:8686
+      - UN_LIDARR_0_API_KEY=${LIDARR_API_KEY}
+    volumes:
+      - /path/to/your/nas/downloads:/downloads # Update this path (must match qBittorrent)
+    networks:
+      - home_lab_net
+
+  # -------------------------------------------------------
+  # 4. THE *ARR AUTOMATION STACK
+  # -------------------------------------------------------
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
@@ -93,6 +180,11 @@ services:
       - 9696:9696
     networks:
       - home_lab_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9696/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   radarr:
     image: lscr.io/linuxserver/radarr:latest
@@ -109,6 +201,11 @@ services:
       - 7878:7878
     networks:
       - home_lab_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7878/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
@@ -125,6 +222,11 @@ services:
       - 8989:8989
     networks:
       - home_lab_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8989/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
@@ -141,8 +243,27 @@ services:
       - 8686:8686
     networks:
       - home_lab_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8686/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  # 4. MEDIA STREAMING (WITH 2070 SUPER PASSTHROUGH)
+  recyclarr:
+    image: ghcr.io/recyclarr/recyclarr:latest
+    container_name: recyclarr
+    restart: unless-stopped
+    user: "${PUID}:${PGID}"
+    environment:
+      - TZ=${TIMEZONE}
+    volumes:
+      - ./config/recyclarr:/config
+    networks:
+      - home_lab_net
+
+  # -------------------------------------------------------
+  # 5. MEDIA STREAMING
+  # -------------------------------------------------------
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
@@ -167,3 +288,121 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8096/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    restart: unless-stopped
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=${TIMEZONE}
+    volumes:
+      - ./config/jellyseerr:/app/config
+    ports:
+      - 5055:5055
+    networks:
+      - home_lab_net
+    depends_on:
+      jellyfin:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:5055/api/v1/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # -------------------------------------------------------
+  # 6. MONITORING
+  # -------------------------------------------------------
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - 9090:9090
+    networks:
+      - home_lab_net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./config/grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - 3000:3000
+    networks:
+      - home_lab_net
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    network_mode: host
+    pid: host
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+
+  # -------------------------------------------------------
+  # 7. BACKUP
+  # -------------------------------------------------------
+  duplicati:
+    image: lscr.io/linuxserver/duplicati:latest
+    container_name: duplicati
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ./config/duplicati:/config
+      - ./backups:/backups
+      - ./config:/source:ro  # Backs up all container config directories
+    ports:
+      - 8200:8200
+    networks:
+      - home_lab_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8200"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

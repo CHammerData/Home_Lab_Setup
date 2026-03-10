@@ -1,0 +1,14 @@
+# Recyclarr Configuration
+# Documentation: https://recyclarr.dev/wiki/yaml/config-reference/
+# Run `docker exec -it recyclarr recyclarr config create` to regenerate this file.
+# Run `docker exec -it recyclarr recyclarr sync` to apply manually.
+
+sonarr:
+  sonarr-main:
+    base_url: http://sonarr:8989
+    api_key: !env_var SONARR_API_KEY  # Set SONARR_API_KEY in your .env file
+
+radarr:
+  radarr-main:
+    base_url: http://radarr:7878
+    api_key: !env_var RADARR_API_KEY  # Set RADARR_API_KEY in your .env file
