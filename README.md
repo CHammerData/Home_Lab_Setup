@@ -11,9 +11,9 @@ graph TD
     Internet((Internet)) <--> Router[Home Router]
     Router <--> Switch[TP-Link 24-Port Switch]
 
-    Switch <--> Desktop[Main Desktop\nRTX 4070 Super]
-    Switch <--> NAS[NAS Node\ni3-12100 / 4x 12TB HDD]
-    Switch <--> AppServer[App Server Node\ni5-13500 / RTX 2070 Super]
+    Switch <--> Desktop[Main Desktop<br/>RTX 4070 Super]
+    Switch <--> NAS[NAS Node<br/>i3-12100 / 4x 12TB HDD]
+    Switch <--> AppServer[App Server Node<br/>i5-13500 / RTX 2070 Super]
     Switch <--> Designated_HA[Designated Home Assistant Machine]
     Switch <--> RPI1[Raspberry Pi 1]
     Switch <--> RPI2[Raspberry Pi 2]
@@ -34,15 +34,15 @@ graph TD
             Docker[Docker Engine]
             OS --> Docker
 
-            Tailscale[Tailscale VPN\nMesh Network]
+            Tailscale[Tailscale VPN<br/>Mesh Network]
 
             subgraph Proxy_Auth [Reverse Proxy & Auth]
-                NPM[Nginx Proxy Manager\nHTTPS Termination] --> Authelia[Authelia\nSSO / 2FA]
+                NPM[Nginx Proxy Manager<br/>HTTPS Termination] --> Authelia[Authelia<br/>SSO / 2FA]
             end
 
             subgraph VPN_Pipeline [Secure Download Pipeline]
                 Gluetun[Gluetun VPN] --> qBit[qBittorrent]
-                Unpackerr[Unpackerr\nAuto-Extract]
+                Unpackerr[Unpackerr<br/>Auto-Extract]
             end
 
             subgraph Media_Automation [Media Automation]
@@ -54,8 +54,8 @@ graph TD
             end
 
             subgraph Media_Services [Media Services]
-                Jellyfin[Jellyfin\nGPU Passthrough]
-                Jellyseerr[Jellyseerr\nMedia Requests]
+                Jellyfin[Jellyfin<br/>GPU Passthrough]
+                Jellyseerr[Jellyseerr<br/>Media Requests]
                 Jellyseerr --> Jellyfin
             end
 
@@ -64,7 +64,7 @@ graph TD
                 Prometheus --> Grafana
             end
 
-            Duplicati[Duplicati\nBackup]
+            Duplicati[Duplicati<br/>Backup]
 
             Docker --> Tailscale
             Docker --> Proxy_Auth
