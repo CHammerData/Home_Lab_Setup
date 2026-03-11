@@ -32,8 +32,11 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | UPS | — | — | — | — | — | — | — | Deferred | Revisit after initial build. |
 
 **Shared / Rack Expected Total: $930.00**
+
 **Shared / Rack Actual Spent: $0.00**
+
 **Shared / Rack Still to Go: $930.00**
+
 **Shared / Rack Saved / (Over): —** *(nothing purchased yet)*
 
 ---
@@ -47,8 +50,11 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Rack Chassis | Listed in Shared / Rack | — | — | — | — | — | — | — | — |
 
 **Desktop Conversion Expected Total: $1,111.00**
+
 **Desktop Conversion Actual Spent: $351.49**
+
 **Desktop Conversion Still to Go: $700.00** *(GPU not yet ordered)*
+
 **Desktop Conversion Saved / (Over): +$59.51**
 
 ---
@@ -67,8 +73,11 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Storage (HDD) | Seagate IronWolf 12TB NAS HDD | 4 | $369.00 | | $1,476.00 | | | To Order | ZFS RAID-Z1 (~36TB usable). |
 
 **NAS Node Expected Total: $1,857.00**
+
 **NAS Node Actual Spent: $298.24**
+
 **NAS Node Still to Go: $1,476.00** *(4x IronWolf HDDs not yet ordered)*
+
 **NAS Node Saved / (Over): +$82.76**
 
 ---
@@ -88,8 +97,11 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | GPU | Nvidia RTX 2070 Super | 1 | Owned | $0.00 | $0.00 | $0.00 | — | Owned | Pulled from gaming desktop. Jellyfin NVENC hardware transcoding. |
 
 **App Server Expected Total: $1,711.00**
+
 **App Server Actual Spent: $1,660.21** *(all items ordered or owned)*
+
 **App Server Still to Go: $0.00** ✓
+
 **App Server Saved / (Over): +$50.79**
 
 ---
