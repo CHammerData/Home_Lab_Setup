@@ -3,6 +3,7 @@
 Tracks all physical hardware across every node in the rack. Update the **Status** column as components are ordered, received, and installed.
 
 **Status Key:** `Owned` | `To Order` | `Ordered` | `Received` | `Installed` | `Deferred`
+
 **Saved / (Over):** Positive = under budget. Parentheses = over budget.
 
 ---
@@ -62,6 +63,7 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 ## NAS Node
 
 **OS:** TrueNAS SCALE
+
 **Boot Device:** USB thumb drive (owned)
 
 | Component | Model | Qty | Unit Price | Actual Price | Expected Total | Actual Total | Saved / (Over) | Status | Notes |
@@ -85,6 +87,7 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 ## App Server
 
 **OS:** Ubuntu Server LTS
+
 **Boot Device:** USB thumb drive (owned)
 
 | Component | Model | Qty | Unit Price | Actual Price | Expected Total | Actual Total | Saved / (Over) | Status | Notes |
