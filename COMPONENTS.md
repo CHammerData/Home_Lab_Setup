@@ -14,8 +14,8 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Shared / Rack | $930.00 | $0.00 | $930.00 | — | Not Started |
 | Desktop Conversion | $1,111.00 | $351.49 | $700.00 | +$59.51 | In Progress |
 | NAS Node | $1,857.00 | $298.24 | $1,476.00 | +$82.76 | In Progress |
-| App Server | $1,711.00 | $891.61 | $768.60 | +$50.79 | In Progress |
-| **GRAND TOTAL** | **$5,609.00** | **$1,541.34** | **$3,874.60** | **+$193.06** | **In Progress** |
+| App Server | $1,711.00 | $1,660.21 | $0.00 | +$50.79 | Complete ✓ |
+| **GRAND TOTAL** | **$5,609.00** | **$2,309.94** | **$3,106.00** | **+$193.06** | **In Progress** |
 
 > **DDR5 Note:** RAM prices reflect the active DDR5 shortage (prices up ~300–400% since mid-2025, forecast to persist through Q4 2027). Monitor for price drops before purchasing if timeline allows.
 
@@ -84,12 +84,12 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Motherboard | Gigabyte Z790 UD AX | 1 | $180.00 | $149.99 | $180.00 | $149.99 | +$30.01 | Ordered | LGA1700, DDR5, PCIe 5.0. Supports GPU passthrough. |
 | Memory | 32GB Corsair VENGEANCE RGB DDR5 | 1 | $411.00 | $351.49 | $411.00 | $351.49 | +$59.51 | Ordered | DDR5 shortage pricing — premium kit. |
 | Power Supply | Corsair RM750e 750W | 1 | $121.00 | $92.64 | $121.00 | $92.64 | +$28.36 | Ordered | 80+ Gold. Adequate for i5-13500 + RTX 2070 Super. |
-| Storage (NVMe) | Samsung 980 PRO 2TB | 2 | $377.00 | $384.30 | $754.00 | $768.60 | ($14.60) | To Order | Primary OS + Docker working directory. Second drive for additional storage or backup staging. |
+| Storage (NVMe) | Samsung 980 PRO 2TB | 2 | $377.00 | $384.30 | $754.00 | $768.60 | ($14.60) | Ordered | Primary OS + Docker working directory. Second drive for additional storage or backup staging. |
 | GPU | Nvidia RTX 2070 Super | 1 | Owned | $0.00 | $0.00 | $0.00 | — | Owned | Pulled from gaming desktop. Jellyfin NVENC hardware transcoding. |
 
 **App Server Expected Total: $1,711.00**
-**App Server Actual Spent: $891.61** *(CPU, Mobo, Memory, PSU ordered)*
-**App Server Still to Go: $768.60** *(2x NVMe drives not yet ordered)*
+**App Server Actual Spent: $1,660.21** *(all items ordered or owned)*
+**App Server Still to Go: $0.00** ✓
 **App Server Saved / (Over): +$50.79**
 
 ---
