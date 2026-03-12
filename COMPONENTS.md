@@ -12,11 +12,11 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 
 | Node | Expected Total | Actual Spent | Still to Go | Saved / (Over) | Status |
 | :--- | ---: | ---: | ---: | ---: | :--- |
-| Shared / Rack | $930.00 | $0.00 | $930.00 | — | Not Started |
-| Desktop Conversion | $1,111.00 | $351.49 | $700.00 | +$59.51 | In Progress |
+| Shared / Rack | $930.00 | $791.81 | $120.00 | +$18.19 | In Progress |
+| Desktop Conversion | $1,111.00 | $1,146.24 | $0.00 | ($35.24) | Complete ✓ |
 | NAS Node | $1,857.00 | $298.24 | $1,476.00 | +$82.76 | In Progress |
 | App Server | $1,711.00 | $1,660.21 | $0.00 | +$50.79 | Complete ✓ |
-| **GRAND TOTAL** | **$5,609.00** | **$2,309.94** | **$3,106.00** | **+$193.06** | **In Progress** |
+| **GRAND TOTAL** | **$5,609.00** | **$3,896.50** | **$1,596.00** | **+$116.50** | **In Progress** |
 
 > **DDR5 Note:** RAM prices reflect the active DDR5 shortage (prices up ~300–400% since mid-2025, forecast to persist through Q4 2027). Monitor for price drops before purchasing if timeline allows.
 
@@ -26,37 +26,39 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 
 | Component | Model | Qty | Unit Price | Actual Price | Expected Total | Actual Total | Saved / (Over) | Status | Notes |
 | :--- | :--- | :---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
-| Rack Chassis | Rosewill RSV-L4500U 4U Server Chassis | 3 | $230.00 | | $690.00 | | | To Order | One each for NAS, App Server, and Desktop. |
-| Switch | TP-Link TL-SG1024DE 24-Port Easy Smart Managed | 1 | $120.00 | | $120.00 | | | To Order | Managed. Supports VLANs for network segmentation. |
+| Rack Chassis | Rosewill RSV-L4500U 4U Server Chassis | 3 | $230.00 | $223.11 | $690.00 | $669.34 | +$20.66 | Ordered | One each for NAS, App Server, and Desktop. |
+| Switch | TP-Link TL-SG1024DE 24-Port Easy Smart Managed | 1 | $120.00 | $122.47 | $120.00 | $122.47 | ($2.47) | Ordered | Managed. Supports VLANs for network segmentation. |
 | Patch Panel | TRENDnet 24-Port Blank Keystone 1U + Cat6 | 1 | $120.00 | | $120.00 | | | To Order | |
 | Rack Enclosure | — | 1 | Owned | $0.00 | $0.00 | $0.00 | — | Owned | Existing rack. |
 | UPS | — | — | — | — | — | — | — | Deferred | Revisit after initial build. |
 
 **Shared / Rack Expected Total: $930.00**
 
-**Shared / Rack Actual Spent: $0.00**
+**Shared / Rack Actual Spent: $791.81**
 
-**Shared / Rack Still to Go: $930.00**
+**Shared / Rack Still to Go: $120.00** *(Patch Panel not yet ordered)*
 
-**Shared / Rack Saved / (Over): —** *(nothing purchased yet)*
+**Shared / Rack Saved / (Over): +$18.19**
 
 ---
 
 ## Desktop Conversion (Gaming PC)
 
+**OS:** Windows 11 (already installed and licensed)
+
 | Component | Model | Qty | Unit Price | Actual Price | Expected Total | Actual Total | Saved / (Over) | Status | Notes |
 | :--- | :--- | :---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
-| GPU Upgrade | ASUS ProArt GeForce RTX 4070 Super OC | 1 | $700.00 | | $700.00 | | | To Order | Replaces RTX 2070 Super (moved to App Server). Card is 266mm — confirmed fits RSV-L4500U. |
+| GPU Upgrade | ASUS ProArt GeForce RTX 4070 Super OC | 1 | $700.00 | $794.75 | $700.00 | $794.75 | ($94.75)| Ordered | Replaces RTX 2070 Super (moved to App Server). Card is 266mm — confirmed fits RSV-L4500U. |
 | Memory | 32GB Corsair VENGEANCE RGB DDR5 | 1 | $411.00 | $351.49 | $411.00 | $351.49 | +$59.51 | Ordered | DDR5 shortage pricing — premium kit. |
 | Rack Chassis | Listed in Shared / Rack | — | — | — | — | — | — | — | — |
 
 **Desktop Conversion Expected Total: $1,111.00**
 
-**Desktop Conversion Actual Spent: $351.49**
+**Desktop Conversion Actual Spent: $1,146.24** *(all items ordered)*
 
-**Desktop Conversion Still to Go: $700.00** *(GPU not yet ordered)*
+**Desktop Conversion Still to Go: $0.00** ✓
 
-**Desktop Conversion Saved / (Over): +$59.51**
+**Desktop Conversion Saved / (Over): ($35.24)**
 
 ---
 
