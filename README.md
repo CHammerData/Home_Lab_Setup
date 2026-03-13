@@ -17,7 +17,7 @@ A fully containerized home media server built on two rack-mounted nodes — a Tr
 | **Nginx Proxy Manager** | `81` | `http://<server-ip>:81` |
 | **Portainer** | `9000` | `http://<server-ip>:9000` |
 | **Jellyfin** | `8096` | `http://<server-ip>:8096` |
-| **Jellyseerr** | `5055` | `http://<server-ip>:5055` |
+| **Seerr** | `5055` | `http://<server-ip>:5055` |
 | **qBittorrent** | `8080` | `http://<server-ip>:8080` |
 | **Prowlarr** | `9696` | `http://<server-ip>:9696` |
 | **Radarr** | `7878` | `http://<server-ip>:7878` |
@@ -32,6 +32,9 @@ A fully containerized home media server built on two rack-mounted nodes — a Tr
 
 ## Changelog
 
+### v2.1 — Seerr Migration
+- **[Update]** Migrated from **Jellyseerr** to **Seerr** (`ghcr.io/seerr-team/seerr:latest`). Jellyseerr was deprecated 2026-02-16; Seerr is the unified successor to both Jellyseerr and Overseerr. Port (5055) and config path are unchanged — existing data migrates automatically on first run.
+
 ### v2.0 — Major Enhancements
 - **[Fix]** Added `depends_on` with `condition: service_healthy` on qBittorrent → Gluetun. qBittorrent will no longer start until the VPN tunnel is confirmed active, closing a potential IP leak window at container startup.
 - **[Fix]** Removed deprecated `version: "3.8"` top-level key from `docker-compose.yml`.
@@ -40,7 +43,7 @@ A fully containerized home media server built on two rack-mounted nodes — a Tr
 - **[New]** Added **Authelia** — SSO and 2FA authentication portal.
 - **[New]** Added **Unpackerr** — automatically extracts `.rar`/`.zip` archives after download completes.
 - **[New]** Added **Recyclarr** — automatically syncs TRaSH Guides quality profiles to Radarr and Sonarr.
-- **[New]** Added **Jellyseerr** — media request portal for Jellyfin users.
+- **[New]** Added **Jellyseerr** — media request portal for Jellyfin users. (Migrated to **Seerr** in v2.1)
 - **[New]** Added **Prometheus + Grafana + Node Exporter** — full-stack monitoring.
 - **[New]** Added **Duplicati** — encrypted, scheduled backup of all container config directories.
 - **[New]** Split documentation into README, ARCHITECTURE, SETUP, and COMPONENTS.

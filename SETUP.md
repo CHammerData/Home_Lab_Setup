@@ -145,7 +145,7 @@ This guide walks through the full build and deployment from bare hardware to a r
 
 1. **Prowlarr → Radarr / Sonarr / Lidarr:** In Prowlarr, go to **Settings > Apps** and add each *Arr app using its container name as the hostname (e.g., `http://radarr:7878`). Prowlarr syncs indexers automatically.
 2. **qBittorrent → Radarr / Sonarr / Lidarr:** In each *Arr app, go to **Settings > Download Clients** and add qBittorrent pointing to `http://gluetun:8080`.
-3. **Jellyseerr → Jellyfin:** Open Jellyseerr at `http://<server-ip>:5055`, follow the setup wizard, sign in with your Jellyfin admin account, then connect Radarr and Sonarr under **Settings > Services**.
+3. **Seerr → Jellyfin:** Open Seerr at `http://<server-ip>:5055`, follow the setup wizard, sign in with your Jellyfin admin account, then connect Radarr and Sonarr under **Settings > Services**.
 
 ### Validation Checklist
 

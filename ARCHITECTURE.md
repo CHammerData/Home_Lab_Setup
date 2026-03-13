@@ -51,8 +51,8 @@ graph TD
 
             subgraph Media_Services [Media Services]
                 Jellyfin[Jellyfin<br/>GPU Passthrough]
-                Jellyseerr[Jellyseerr<br/>Media Requests]
-                Jellyseerr --> Jellyfin
+                Seerr[Seerr<br/>Media Requests]
+                Seerr --> Jellyfin
             end
 
             subgraph Monitoring_Stack [Monitoring]
@@ -106,7 +106,7 @@ graph TD
 | **Lidarr** | `8686` | Music collection manager. |
 | **Recyclarr** | — | Automatically syncs quality profiles and custom formats to Radarr and Sonarr. |
 | **Jellyfin** | `8096` | Media streaming server with GPU-accelerated transcoding. |
-| **Jellyseerr** | `5055` | Media request portal for Jellyfin users. |
+| **Seerr** | `5055` | Media request portal for Jellyfin users. |
 | **Prometheus** | `9090` | Time-series metrics collection and storage. |
 | **Grafana** | `3000` | Metrics visualization and dashboarding. |
 | **Node Exporter** | `9100` | Exposes host-level hardware and OS metrics to Prometheus. |
