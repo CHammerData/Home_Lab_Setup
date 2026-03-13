@@ -49,7 +49,7 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Component | Model | Qty | Unit Price | Actual Price | Expected Total | Actual Total | Saved / (Over) | Status | Notes |
 | :--- | :--- | :---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
 | GPU Upgrade | ASUS ProArt GeForce RTX 4070 Super OC | 1 | $700.00 | $794.75 | $700.00 | $794.75 | ($94.75)| Ordered | Replaces RTX 2070 Super (moved to App Server). Card is 266mm — confirmed fits RSV-L4500U. |
-| Memory | 32GB Corsair VENGEANCE RGB DDR5 | 1 | $411.00 | $351.49 | $411.00 | $351.49 | +$59.51 | Ordered | DDR5 shortage pricing — premium kit. |
+| Memory | 32GB Corsair VENGEANCE RGB DDR5 | 1 | $411.00 | $351.49 | $411.00 | $351.49 | +$59.51 | Received | DDR5 shortage pricing — premium kit. |
 | Rack Chassis | Listed in Shared / Rack | — | — | — | — | — | — | — | — |
 
 **Desktop Conversion Expected Total: $1,111.00**
@@ -71,9 +71,9 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Component | Model | Qty | Unit Price | Actual Price | Expected Total | Actual Total | Saved / (Over) | Status | Notes |
 | :--- | :--- | :---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
 | CPU | Intel Core i3-12100 | 1 | $110.00 | $95.61 | $110.00 | $95.61 | +$14.39 | Ordered | LGA1700 socket. |
-| Motherboard | ASRock B760 PRO RS | 1 | $150.00 | $109.99 | $150.00 | $109.99 | +$40.01 | Ordered | LGA1700, DDR5, 6x SATA ports. |
+| Motherboard | ASRock B760 PRO RS | 1 | $150.00 | $109.99 | $150.00 | $109.99 | +$40.01 | Received | LGA1700, DDR5, 6x SATA ports. |
 | Memory | 16GB DDR5 | 1 | $0.00 | $0.00 | $0.00 | $0.00 | — | Owned | Pulled from gaming desktop. |
-| Power Supply | Corsair RM650e 650W | 1 | $121.00 | $92.64 | $121.00 | $92.64 | +$28.36 | Ordered | 80+ Gold. Adequate for i3-12100 + 4x HDD. |
+| Power Supply | Corsair RM750e 750W | 1 | $121.00 | $92.64 | $121.00 | $92.64 | +$28.36 | Ordered | 80+ Gold. Adequate for i3-12100 + 4x HDD. |
 | Storage (HDD) | Seagate IronWolf 12TB NAS HDD | 4 | $369.00 | | $1,476.00 | | | To Order | ZFS RAID-Z1 (~36TB usable). |
 
 **NAS Node Expected Total: $1,857.00**
@@ -95,10 +95,10 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Component | Model | Qty | Unit Price | Actual Price | Expected Total | Actual Total | Saved / (Over) | Status | Notes |
 | :--- | :--- | :---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
 | CPU | Intel Core i5-13500 | 1 | $245.00 | $297.49 | $245.00 | $297.49 | ($52.49) | Ordered | LGA1700, 14 cores / 20 threads. |
-| Motherboard | Gigabyte Z790 UD AX | 1 | $180.00 | $149.99 | $180.00 | $149.99 | +$30.01 | Ordered | LGA1700, DDR5, PCIe 5.0. Supports GPU passthrough. |
-| Memory | 32GB Corsair VENGEANCE RGB DDR5 | 1 | $411.00 | $351.49 | $411.00 | $351.49 | +$59.51 | Ordered | DDR5 shortage pricing — premium kit. |
-| Power Supply | Corsair RM750e 750W | 1 | $121.00 | $92.64 | $121.00 | $92.64 | +$28.36 | Ordered | 80+ Gold. Adequate for i5-13500 + RTX 2070 Super. |
-| Storage (NVMe) | Samsung 980 PRO 2TB | 2 | $377.00 | $384.30 | $754.00 | $768.60 | ($14.60) | Ordered | Primary OS + Docker working directory. Second drive for additional storage or backup staging. |
+| Motherboard | Gigabyte Z790 UD AX | 1 | $180.00 | $149.99 | $180.00 | $149.99 | +$30.01 | Received | LGA1700, DDR5, PCIe 5.0. Supports GPU passthrough. |
+| Memory | 32GB Corsair VENGEANCE RGB DDR5 | 1 | $411.00 | $351.49 | $411.00 | $351.49 | +$59.51 | Received | DDR5 shortage pricing — premium kit. |
+| Power Supply | Corsair RM750e 750W | 1 | $121.00 | $92.64 | $121.00 | $92.64 | +$28.36 | Received | 80+ Gold. Adequate for i5-13500 + RTX 2070 Super. |
+| Storage (NVMe) | Samsung 980 PRO 2TB | 2 | $377.00 | $384.30 | $754.00 | $768.60 | ($14.60) | Received | Primary OS + Docker working directory. Second drive for additional storage or backup staging. |
 | GPU | Nvidia RTX 2070 Super | 1 | Owned | $0.00 | $0.00 | $0.00 | — | Owned | Pulled from gaming desktop. Jellyfin NVENC hardware transcoding. |
 
 **App Server Expected Total: $1,711.00**
