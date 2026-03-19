@@ -6,7 +6,7 @@ This guide walks through the full build and deployment from bare hardware to a r
 
 ## Phase 1: NAS Setup (TrueNAS SCALE)
 
-1. **Install OS:** Install TrueNAS SCALE on the NAS node.
+1. **Install OS:** Install TrueNAS SCALE to the dedicated M.2 NVMe boot SSD — **not** to any of the IronWolf HDDs. During the installer, select only the M.2 drive as the boot device. TrueNAS SCALE 24.10+ will generate an active alert if it detects a USB device as the boot pool; a dedicated internal SSD avoids this entirely.
 2. **Create Storage Pool:** Create a ZFS pool with RAID-Z1 across your 4 drives.
 3. **Create Datasets:** Create datasets for media and downloads (e.g., `/mnt/pool/media`, `/mnt/pool/downloads`).
 4. **Enable Shares:** Turn on the NFS service for the App Server to mount. Optionally enable SMB for Windows access.
@@ -15,7 +15,7 @@ This guide walks through the full build and deployment from bare hardware to a r
 
 ## Phase 2: App Server Setup (Ubuntu Server)
 
-1. **Install OS:** Install Ubuntu Server LTS with the OpenSSH server enabled for headless management.
+1. **Install OS:** Install Ubuntu Server LTS to **Disk 1 (Samsung 980 PRO 2TB)** with the OpenSSH server enabled for headless management. Disk 2 is left unformatted at install time for use as additional storage or backup staging.
 2. **Install GPU Drivers:** Install the proprietary Nvidia drivers for the RTX 2070 Super.
 3. **Install Docker:** Install Docker Engine and the NVIDIA Container Toolkit to allow containers to access the GPU.
 4. **Install Tailscale:**

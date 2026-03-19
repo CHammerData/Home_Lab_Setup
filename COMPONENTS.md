@@ -14,9 +14,9 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | :--- | ---: | ---: | ---: | ---: | :--- |
 | Shared / Rack | $930.00 | $791.81 | $120.00 | +$18.19 | In Progress |
 | Desktop Conversion | $1,111.00 | $1,146.24 | $0.00 | ($35.24) | Complete ✓ |
-| NAS Node | $1,857.00 | $1,254.46 | $369.00 | +$233.54 | In Progress |
+| NAS Node | $1,882.00 | $1,254.46 | $394.00 | +$233.54 | In Progress |
 | App Server | $1,711.00 | $1,660.21 | $0.00 | +$50.79 | Complete ✓ |
-| **GRAND TOTAL** | **$5,609.00** | **$4,852.72** | **$489.00** | **+$267.28** | **In Progress** |
+| **GRAND TOTAL** | **$5,634.00** | **$4,852.72** | **$514.00** | **+$267.28** | **In Progress** |
 
 > **DDR5 Note:** RAM prices reflect the active DDR5 shortage (prices up ~300–400% since mid-2025, forecast to persist through Q4 2027). Monitor for price drops before purchasing if timeline allows.
 
@@ -66,7 +66,9 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 
 **OS:** TrueNAS SCALE
 
-**Boot Device:** USB thumb drive (owned)
+**Boot Device:** M.2 NVMe SSD (dedicated — see table below)
+
+> **Note:** TrueNAS SCALE 24.10+ actively warns against USB boot devices and writes continuously to the boot pool at idle. A dedicated internal SSD is required. USB thumb drives are not supported for this use case.
 
 | Component | Model | Qty | Unit Price | Actual Price | Expected Total | Actual Total | Saved / (Over) | Status | Notes |
 | :--- | :--- | :---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
@@ -74,13 +76,14 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Motherboard | ASRock B760 PRO RS | 1 | $150.00 | $109.99 | $150.00 | $109.99 | +$40.01 | Received | LGA1700, DDR5, 6x SATA ports. |
 | Memory | 16GB DDR5 | 1 | $0.00 | $0.00 | $0.00 | $0.00 | — | Owned | Pulled from gaming desktop. |
 | Power Supply | Corsair RM750e 750W | 1 | $121.00 | $92.64 | $121.00 | $92.64 | +$28.36 | Received | 80+ Gold. Adequate for i3-12100 + 4x HDD. |
+| Boot Drive (M.2 SSD) | 128 GB M.2 NVMe SSD (e.g., Kingston NV2) | 1 | $25.00 | | $25.00 | | | To Order | Dedicated TrueNAS boot drive. USB not supported as of SCALE 24.10. M.2 slot on B760 PRO RS. |
 | Storage (HDD) | Seagate IronWolf 12TB NAS HDD | 4 | $369.00 | $318.74 | $1,476.00 | $956.22 | — | Received | ZFS RAID-Z1 (~36TB usable). 3/4 received ($956.22 incl. tax); 1 remaining to acquire. |
 
-**NAS Node Expected Total: $1,857.00**
+**NAS Node Expected Total: $1,882.00**
 
 **NAS Node Actual Spent: $1,254.46**
 
-**NAS Node Still to Go: $369.00** *(1x IronWolf HDD remaining)*
+**NAS Node Still to Go: $394.00** *(1x IronWolf HDD + 1x M.2 Boot SSD remaining)*
 
 **NAS Node Saved / (Over): +$233.54**
 
@@ -90,7 +93,7 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 
 **OS:** Ubuntu Server LTS
 
-**Boot Device:** USB thumb drive (owned)
+**Boot Device:** Samsung 980 PRO 2TB NVMe (Disk 1 of 2)
 
 | Component | Model | Qty | Unit Price | Actual Price | Expected Total | Actual Total | Saved / (Over) | Status | Notes |
 | :--- | :--- | :---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
@@ -98,7 +101,7 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Motherboard | Gigabyte Z790 UD AX | 1 | $180.00 | $149.99 | $180.00 | $149.99 | +$30.01 | Received | LGA1700, DDR5, PCIe 5.0. Supports GPU passthrough. |
 | Memory | 32GB Corsair VENGEANCE RGB DDR5 | 1 | $411.00 | $351.49 | $411.00 | $351.49 | +$59.51 | Received | DDR5 shortage pricing — premium kit. |
 | Power Supply | Corsair RM750e 750W | 1 | $121.00 | $92.64 | $121.00 | $92.64 | +$28.36 | Received | 80+ Gold. Adequate for i5-13500 + RTX 2070 Super. |
-| Storage (NVMe) | Samsung 980 PRO 2TB | 2 | $377.00 | $384.30 | $754.00 | $768.60 | ($14.60) | Received | Primary OS + Docker working directory. Second drive for additional storage or backup staging. |
+| Storage (NVMe) | Samsung 980 PRO 2TB | 2 | $377.00 | $384.30 | $754.00 | $768.60 | ($14.60) | Received | Disk 1: Ubuntu OS boot + Docker working directory. Disk 2: Additional storage / backup staging. |
 | GPU | Nvidia RTX 2070 Super | 1 | Owned | $0.00 | $0.00 | $0.00 | — | Owned | Pulled from gaming desktop. Jellyfin NVENC hardware transcoding. |
 
 **App Server Expected Total: $1,711.00**
