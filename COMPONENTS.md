@@ -12,11 +12,11 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 
 | Node | Expected Total | Actual Spent | Still to Go | Saved / (Over) | Status |
 | :--- | ---: | ---: | ---: | ---: | :--- |
-| Shared / Rack | $930.00 | $895.99 | $0.00 | +$34.01 | Complete ✓ |
+| Shared / Rack | $1,295.00 | $1,260.99 | $0.00 | +$34.01 | Complete ✓ |
 | Desktop Conversion | $1,111.00 | $1,146.24 | $0.00 | ($35.24) | Complete ✓ |
 | NAS Node | $1,882.00 | $1,643.50 | $0.00 | +$238.50 | Complete ✓ |
 | App Server | $1,711.00 | $1,660.21 | $0.00 | +$50.79 | Complete ✓ |
-| **GRAND TOTAL** | **$5,634.00** | **$5,345.94** | **$0.00** | **+$288.06** | **Complete ✓** |
+| **GRAND TOTAL** | **$5,999.00** | **$5,710.94** | **$0.00** | **+$288.06** | **Complete ✓** |
 
 > **DDR5 Note:** RAM prices reflect the active DDR5 shortage (prices up ~300–400% since mid-2025, forecast to persist through Q4 2027). Monitor for price drops before purchasing if timeline allows.
 
@@ -28,17 +28,17 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | :--- | :--- | :---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
 | Rack Chassis | Rosewill RSV-L4500U 4U Server Chassis | 3 | $230.00 | $223.11 | $690.00 | $669.34 | +$20.66 | Received | One each for NAS, App Server, and Desktop. |
 | Switch | TP-Link TL-SG1024DE 24-Port Easy Smart Managed | 1 | $120.00 | $122.47 | $120.00 | $122.47 | ($2.47) | Received | Managed. Supports VLANs for network segmentation. |
-| Patch Panel | Monoprice 24-Port Unloaded STP Keystone 1U | 1 | $120.00 | $34.95 | $120.00 | $34.95 | — | Ordered | $120 was bundled estimate for full cabling setup (all rows below). |
-| Keystone Couplers | Cat 6 Keystone Couplers (24-pack) | 1 | — | $15.61 | — | $15.61 | — | Ordered | Included in patch panel budget above. |
-| Patch Cables (6FT) | Cat 6 Ethernet Cable 6FT 10-Pack | 1 | — | $23.36 | — | $23.36 | — | Ordered | Short runs between patch panel and switch. |
-| Patch Cables (0.5FT) | Cat 6 Ethernet Cable 0.5FT 10-Pack | 1 | — | $20.26 | — | $20.26 | — | Ordered | Ultra-short runs / same-rack connections. |
-| Rack Hardware | M6 x 16mm Cage Nuts, Screws & Washers (50-pack) | 1 | — | $10.00 | — | $10.00 | — | Ordered | For mounting rack equipment. |
+| Patch Panel | Monoprice 24-Port Unloaded STP Keystone 1U | 1 | $120.00 | $34.95 | $120.00 | $34.95 | — | Received | $120 was bundled estimate for full cabling setup (all rows below). |
+| Keystone Couplers | Cat 6 Keystone Couplers (24-pack) | 1 | — | $15.61 | — | $15.61 | — | Received | Included in patch panel budget above. |
+| Patch Cables (6FT) | Cat 6 Ethernet Cable 6FT 10-Pack | 1 | — | $23.36 | — | $23.36 | — | Received | Short runs between patch panel and switch. |
+| Patch Cables (0.5FT) | Cat 6 Ethernet Cable 0.5FT 10-Pack | 1 | — | $20.26 | — | $20.26 | — | Received | Ultra-short runs / same-rack connections. |
+| Rack Hardware | M6 x 16mm Cage Nuts, Screws & Washers (50-pack) | 1 | — | $10.00 | — | $10.00 | — | Received | For mounting rack equipment. |
 | Rack Enclosure | — | 1 | Owned | $0.00 | $0.00 | $0.00 | — | Owned | Existing rack. |
-| UPS | — | — | — | — | — | — | — | Deferred | Revisit after initial build. |
+| UPS | CyberPower CP1500PFCRM2U PFC Sinewave 1500VA/1000W 2U | 1 | $365.00 | $365.00 | $365.00 | $365.00 | $0.00 | Received | Rackmount 2U. Pure sine wave — safe for all PSU types. |
 
-**Shared / Rack Expected Total: $930.00**
+**Shared / Rack Expected Total: $1,295.00**
 
-**Shared / Rack Actual Spent: $895.99**
+**Shared / Rack Actual Spent: $1,260.99**
 
 **Shared / Rack Still to Go: $0.00** ✓
 
@@ -80,9 +80,9 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Motherboard | ASRock B760 PRO RS | 1 | $150.00 | $109.99 | $150.00 | $109.99 | +$40.01 | Received | LGA1700, DDR5, 6x SATA ports. |
 | Memory | 16GB DDR5 | 1 | $0.00 | $0.00 | $0.00 | $0.00 | — | Owned | Pulled from gaming desktop. |
 | Power Supply | Corsair RM750e 750W | 1 | $121.00 | $92.64 | $121.00 | $92.64 | +$28.36 | Received | 80+ Gold. Adequate for i3-12100 + 4x HDD. |
-| Boot Drive (M.2 SSD) | Inland TN320 256GB NVMe PCIe Gen 3.0x4 M.2 | 1 | $25.00 | $64.99 | $25.00 | $64.99 | ($39.99) | Ordered | Dedicated TrueNAS boot drive. USB not supported as of SCALE 24.10. M.2 slot on B760 PRO RS. |
-| Storage (HDD) | Seagate IronWolf 12TB NAS HDD | 3 | $369.00 | $318.74 | $1,107.00 | $956.22 | +$150.78 | Ordered | ZFS RAID-Z1 (~36TB usable). |
-| Storage (HDD) | WD Red Pro 12TB 7200RPM SATA III 3.5" | 1 | $369.00 | $324.05 | $369.00 | $324.05 | +$44.95 | Ordered | 4th drive to complete RAID-Z1. Mixed models are compatible in ZFS. |
+| Boot Drive (M.2 SSD) | Inland TN320 256GB NVMe PCIe Gen 3.0x4 M.2 | 1 | $25.00 | $64.99 | $25.00 | $64.99 | ($39.99) | Received | Dedicated TrueNAS boot drive. USB not supported as of SCALE 24.10. M.2 slot on B760 PRO RS. |
+| Storage (HDD) | Seagate IronWolf 12TB NAS HDD | 3 | $369.00 | $318.74 | $1,107.00 | $956.22 | +$150.78 | Received | ZFS RAID-Z1 (~36TB usable). |
+| Storage (HDD) | WD Red Pro 12TB 7200RPM SATA III 3.5" | 1 | $369.00 | $324.05 | $369.00 | $324.05 | +$44.95 | Received | 4th drive to complete RAID-Z1. Mixed models are compatible in ZFS. |
 
 **NAS Node Expected Total: $1,882.00**
 
@@ -124,7 +124,7 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | # | Item | Decision Needed |
 | :--- | :--- | :--- |
 | ~~1~~ | ~~Desktop rack chassis~~ | ~~Resolved~~ — GPU is 266mm, confirmed fits RSV-L4500U. |
-| ~~2~~ | ~~UPS~~ | ~~Resolved~~ — deferred. Revisit after initial build. |
+| ~~2~~ | ~~UPS~~ | ~~Resolved~~ — CyberPower CP1500PFCRM2U acquired. |
 | ~~3~~ | ~~Switch~~ | ~~Resolved~~ — upgrading to TL-SG1024DE (managed). |
 
 ---
@@ -133,6 +133,7 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 
 | U Position | Device |
 | :--- | :--- |
+| TBD | CyberPower CP1500PFCRM2U UPS (2U) |
 | TBD | Patch Panel (1U) |
 | TBD | TP-Link Switch (1U) |
 | TBD | NAS Node — Rosewill RSV-L4500U (4U) |
