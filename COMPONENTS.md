@@ -14,9 +14,9 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | :--- | ---: | ---: | ---: | ---: | :--- |
 | Shared / Rack | $930.00 | $895.99 | $0.00 | +$34.01 | Complete ✓ |
 | Desktop Conversion | $1,111.00 | $1,146.24 | $0.00 | ($35.24) | Complete ✓ |
-| NAS Node | $1,882.00 | $1,319.45 | $369.00 | +$193.55 | In Progress |
+| NAS Node | $1,882.00 | $1,643.50 | $0.00 | +$238.50 | Complete ✓ |
 | App Server | $1,711.00 | $1,660.21 | $0.00 | +$50.79 | Complete ✓ |
-| **GRAND TOTAL** | **$5,634.00** | **$5,021.89** | **$369.00** | **+$243.11** | **In Progress** |
+| **GRAND TOTAL** | **$5,634.00** | **$5,345.94** | **$0.00** | **+$288.06** | **Complete ✓** |
 
 > **DDR5 Note:** RAM prices reflect the active DDR5 shortage (prices up ~300–400% since mid-2025, forecast to persist through Q4 2027). Monitor for price drops before purchasing if timeline allows.
 
@@ -81,15 +81,16 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Memory | 16GB DDR5 | 1 | $0.00 | $0.00 | $0.00 | $0.00 | — | Owned | Pulled from gaming desktop. |
 | Power Supply | Corsair RM750e 750W | 1 | $121.00 | $92.64 | $121.00 | $92.64 | +$28.36 | Received | 80+ Gold. Adequate for i3-12100 + 4x HDD. |
 | Boot Drive (M.2 SSD) | Inland TN320 256GB NVMe PCIe Gen 3.0x4 M.2 | 1 | $25.00 | $64.99 | $25.00 | $64.99 | ($39.99) | Ordered | Dedicated TrueNAS boot drive. USB not supported as of SCALE 24.10. M.2 slot on B760 PRO RS. |
-| Storage (HDD) | Seagate IronWolf 12TB NAS HDD | 4 | $369.00 | $318.74 | $1,476.00 | $956.22 | — | Received | ZFS RAID-Z1 (~36TB usable). 3/4 received ($956.22 incl. tax); 1 remaining to acquire. |
+| Storage (HDD) | Seagate IronWolf 12TB NAS HDD | 3 | $369.00 | $318.74 | $1,107.00 | $956.22 | +$150.78 | Received | ZFS RAID-Z1 (~36TB usable). |
+| Storage (HDD) | WD Red Pro 12TB 7200RPM SATA III 3.5" | 1 | $369.00 | $324.05 | $369.00 | $324.05 | +$44.95 | Ordered | 4th drive to complete RAID-Z1. Mixed models are compatible in ZFS. |
 
 **NAS Node Expected Total: $1,882.00**
 
-**NAS Node Actual Spent: $1,319.45**
+**NAS Node Actual Spent: $1,643.50**
 
-**NAS Node Still to Go: $369.00** *(1x IronWolf HDD remaining)*
+**NAS Node Still to Go: $0.00** ✓
 
-**NAS Node Saved / (Over): +$193.55**
+**NAS Node Saved / (Over): +$238.50**
 
 ---
 
