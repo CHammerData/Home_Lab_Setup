@@ -26,8 +26,8 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 
 | Component | Model | Qty | Unit Price | Actual Price | Expected Total | Actual Total | Saved / (Over) | Status | Notes |
 | :--- | :--- | :---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
-| Rack Chassis | Rosewill RSV-L4500U 4U Server Chassis | 3 | $230.00 | $223.11 | $690.00 | $669.34 | +$20.66 | Ordered | One each for NAS, App Server, and Desktop. |
-| Switch | TP-Link TL-SG1024DE 24-Port Easy Smart Managed | 1 | $120.00 | $122.47 | $120.00 | $122.47 | ($2.47) | Ordered | Managed. Supports VLANs for network segmentation. |
+| Rack Chassis | Rosewill RSV-L4500U 4U Server Chassis | 3 | $230.00 | $223.11 | $690.00 | $669.34 | +$20.66 | Received | One each for NAS, App Server, and Desktop. |
+| Switch | TP-Link TL-SG1024DE 24-Port Easy Smart Managed | 1 | $120.00 | $122.47 | $120.00 | $122.47 | ($2.47) | Received | Managed. Supports VLANs for network segmentation. |
 | Patch Panel | Monoprice 24-Port Unloaded STP Keystone 1U | 1 | $120.00 | $34.95 | $120.00 | $34.95 | — | Ordered | $120 was bundled estimate for full cabling setup (all rows below). |
 | Keystone Couplers | Cat 6 Keystone Couplers (24-pack) | 1 | — | $15.61 | — | $15.61 | — | Ordered | Included in patch panel budget above. |
 | Patch Cables (6FT) | Cat 6 Ethernet Cable 6FT 10-Pack | 1 | — | $23.36 | — | $23.36 | — | Ordered | Short runs between patch panel and switch. |
@@ -81,7 +81,7 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Memory | 16GB DDR5 | 1 | $0.00 | $0.00 | $0.00 | $0.00 | — | Owned | Pulled from gaming desktop. |
 | Power Supply | Corsair RM750e 750W | 1 | $121.00 | $92.64 | $121.00 | $92.64 | +$28.36 | Received | 80+ Gold. Adequate for i3-12100 + 4x HDD. |
 | Boot Drive (M.2 SSD) | Inland TN320 256GB NVMe PCIe Gen 3.0x4 M.2 | 1 | $25.00 | $64.99 | $25.00 | $64.99 | ($39.99) | Ordered | Dedicated TrueNAS boot drive. USB not supported as of SCALE 24.10. M.2 slot on B760 PRO RS. |
-| Storage (HDD) | Seagate IronWolf 12TB NAS HDD | 3 | $369.00 | $318.74 | $1,107.00 | $956.22 | +$150.78 | Received | ZFS RAID-Z1 (~36TB usable). |
+| Storage (HDD) | Seagate IronWolf 12TB NAS HDD | 3 | $369.00 | $318.74 | $1,107.00 | $956.22 | +$150.78 | Ordered | ZFS RAID-Z1 (~36TB usable). |
 | Storage (HDD) | WD Red Pro 12TB 7200RPM SATA III 3.5" | 1 | $369.00 | $324.05 | $369.00 | $324.05 | +$44.95 | Ordered | 4th drive to complete RAID-Z1. Mixed models are compatible in ZFS. |
 
 **NAS Node Expected Total: $1,882.00**
