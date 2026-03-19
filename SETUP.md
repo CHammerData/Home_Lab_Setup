@@ -10,13 +10,36 @@ This guide walks through the full build and deployment from bare hardware to a r
 2. **Create Storage Pool:** Create a ZFS pool with RAID-Z1 across your 4 drives.
 3. **Create Datasets:** Create datasets for media and downloads (e.g., `/mnt/pool/media`, `/mnt/pool/downloads`).
 4. **Enable Shares:** Turn on the NFS service for the App Server to mount. Optionally enable SMB for Windows access.
+5. **Configure UPS (NUT Master):** Connect the CyberPower CP1500PFCRM2U USB cable to the NAS. In TrueNAS SCALE go to **System Settings → Services → UPS** and configure:
+    - **Identifier:** `cyberpower`
+    - **Driver:** `usbhid-ups` (correct HID driver for CyberPower USB models)
+    - **Port:** `auto`
+    - **Mode:** `Master`
+    - **Monitor Password:** set a strong password — you will need this for client machines
+    - **Shutdown Timer:** `30` seconds (grace period after low-battery signal before shutdown)
+    - **Power Off UPS:** enabled (cuts UPS power after NAS shuts down, preventing restart on power restore)
+    - Enable **Remote Monitor** so client machines (App Server, Desktop) can connect
+    - Start and enable the UPS service. Verify TrueNAS detects the UPS under **System Settings → Services → UPS → UPS Status**.
 
 ---
 
 ## Phase 2: App Server Setup (Ubuntu Server)
 
 1. **Install OS:** Install Ubuntu Server LTS to **Disk 1 (Samsung 980 PRO 2TB)** with the OpenSSH server enabled for headless management. Disk 2 is left unformatted at install time for use as additional storage or backup staging.
-2. **Install GPU Drivers:** Install the proprietary Nvidia drivers for the RTX 2070 Super.
+2. **Configure UPS Client (NUT):** Install the NUT client so the App Server shuts down gracefully when the UPS signals low battery:
+    ```bash
+    sudo apt install nut-client
+    ```
+    Edit `/etc/nut/upsmon.conf` and add:
+    ```
+    MONITOR cyberpower@<NAS_IP> 1 upsmon <monitor_password> slave
+    SHUTDOWNCMD "/sbin/poweroff"
+    ```
+    Enable and start the client:
+    ```bash
+    sudo systemctl enable nut-client && sudo systemctl start nut-client
+    ```
+3. **Install GPU Drivers:** Install the proprietary Nvidia drivers for the RTX 2070 Super.
 3. **Install Docker:** Install Docker Engine and the NVIDIA Container Toolkit to allow containers to access the GPU.
 4. **Install Tailscale:**
     ```bash

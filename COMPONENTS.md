@@ -131,13 +131,18 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 
 ## Rack Layout (Planned)
 
-| U Position | Device |
-| :--- | :--- |
-| TBD | CyberPower CP1500PFCRM2U UPS (2U) |
-| TBD | Patch Panel (1U) |
-| TBD | TP-Link Switch (1U) |
-| TBD | NAS Node — Rosewill RSV-L4500U (4U) |
-| TBD | App Server — Rosewill RSV-L4500U (4U) |
-| TBD | Desktop / Gaming PC — Rosewill RSV-L4500U (4U) |
-| TBD | Designated Home Assistant Machine |
-| TBD | Raspberry Pi shelf |
+Layout is top-down. Pi shelf and Home Assistant sit at the top with open space above for cabling and expansion. UPS, patch panel, and switch form the middle utility block. The three 4U chassis anchor the bottom.
+
+> **UPS weight note:** The CP1500PFCRM2U weighs ~44 lbs with batteries. Mid-rack placement is workable but ensure the rack rails can support the load at that height. Power cables will run downward to the chassis below, which keeps things tidy.
+
+| Position | Device | U Size | Notes |
+| :--- | :--- | :---: | :--- |
+| Top — open | *(expansion / cabling space)* | TBD | Reserved for Pi overhead cabling and future additions. |
+| Top | Raspberry Pi shelf | TBD | Minimal depth; exact U count depends on shelf model chosen. |
+| Top | Home Assistant machine | TBD | Exact form factor TBD. |
+| Middle | CyberPower CP1500PFCRM2U UPS | 2U | Place at top of middle block so power cables drop cleanly to chassis below. |
+| Middle | Patch Panel (1U) | 1U | Directly above switch — keeps patch cable runs as short as possible. |
+| Middle | TP-Link TL-SG1024DE Switch | 1U | Directly below patch panel. |
+| Bottom | NAS Node — Rosewill RSV-L4500U | 4U | Heaviest node; bottom placement improves stability. |
+| Bottom | App Server — Rosewill RSV-L4500U | 4U | |
+| Bottom | Desktop / Gaming PC — Rosewill RSV-L4500U | 4U | Bottommost. GPU exhaust vents toward floor — ensure adequate rear clearance. |
