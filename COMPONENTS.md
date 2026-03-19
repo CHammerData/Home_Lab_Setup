@@ -12,11 +12,11 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 
 | Node | Expected Total | Actual Spent | Still to Go | Saved / (Over) | Status |
 | :--- | ---: | ---: | ---: | ---: | :--- |
-| Shared / Rack | $930.00 | $791.81 | $120.00 | +$18.19 | In Progress |
+| Shared / Rack | $930.00 | $895.99 | $0.00 | +$34.01 | Complete ✓ |
 | Desktop Conversion | $1,111.00 | $1,146.24 | $0.00 | ($35.24) | Complete ✓ |
 | NAS Node | $1,882.00 | $1,319.45 | $369.00 | +$193.55 | In Progress |
 | App Server | $1,711.00 | $1,660.21 | $0.00 | +$50.79 | Complete ✓ |
-| **GRAND TOTAL** | **$5,634.00** | **$4,917.71** | **$489.00** | **+$227.29** | **In Progress** |
+| **GRAND TOTAL** | **$5,634.00** | **$5,021.89** | **$369.00** | **+$243.11** | **In Progress** |
 
 > **DDR5 Note:** RAM prices reflect the active DDR5 shortage (prices up ~300–400% since mid-2025, forecast to persist through Q4 2027). Monitor for price drops before purchasing if timeline allows.
 
@@ -28,17 +28,21 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | :--- | :--- | :---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
 | Rack Chassis | Rosewill RSV-L4500U 4U Server Chassis | 3 | $230.00 | $223.11 | $690.00 | $669.34 | +$20.66 | Ordered | One each for NAS, App Server, and Desktop. |
 | Switch | TP-Link TL-SG1024DE 24-Port Easy Smart Managed | 1 | $120.00 | $122.47 | $120.00 | $122.47 | ($2.47) | Ordered | Managed. Supports VLANs for network segmentation. |
-| Patch Panel | TRENDnet 24-Port Blank Keystone 1U + Cat6 | 1 | $120.00 | | $120.00 | | | To Order | |
+| Patch Panel | Monoprice 24-Port Unloaded STP Keystone 1U | 1 | $120.00 | $34.95 | $120.00 | $34.95 | — | Ordered | $120 was bundled estimate for full cabling setup (all rows below). |
+| Keystone Couplers | Cat 6 Keystone Couplers (24-pack) | 1 | — | $15.61 | — | $15.61 | — | Ordered | Included in patch panel budget above. |
+| Patch Cables (6FT) | Cat 6 Ethernet Cable 6FT 10-Pack | 1 | — | $23.36 | — | $23.36 | — | Ordered | Short runs between patch panel and switch. |
+| Patch Cables (0.5FT) | Cat 6 Ethernet Cable 0.5FT 10-Pack | 1 | — | $20.26 | — | $20.26 | — | Ordered | Ultra-short runs / same-rack connections. |
+| Rack Hardware | M6 x 16mm Cage Nuts, Screws & Washers (50-pack) | 1 | — | $10.00 | — | $10.00 | — | Ordered | For mounting rack equipment. |
 | Rack Enclosure | — | 1 | Owned | $0.00 | $0.00 | $0.00 | — | Owned | Existing rack. |
 | UPS | — | — | — | — | — | — | — | Deferred | Revisit after initial build. |
 
 **Shared / Rack Expected Total: $930.00**
 
-**Shared / Rack Actual Spent: $791.81**
+**Shared / Rack Actual Spent: $895.99**
 
-**Shared / Rack Still to Go: $120.00** *(Patch Panel not yet ordered)*
+**Shared / Rack Still to Go: $0.00** ✓
 
-**Shared / Rack Saved / (Over): +$18.19**
+**Shared / Rack Saved / (Over): +$34.01**
 
 ---
 
