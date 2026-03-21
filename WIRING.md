@@ -234,3 +234,129 @@ graph LR
 - **M.2 slot choice:** Verify the exact slot labels in the Z790 UD AX manual. Use the topmost slot (closest to CPU) for Disk 1 (OS/Docker) as it is typically CPU-direct with the lowest latency. Check the manual for any SATA port conflicts when both slots are populated — on Z790 this is uncommon but worth confirming.
 - **Fan headers available but unused:** The Z790 UD AX has 5 fan/pump headers on board. All 8 case fans are Molex-powered from the PSU — no fan headers are used. These are available for aftermarket cooling if added later.
 - **RGB headers available:** The Z790 UD AX has 2× ARGB and 2× RGB headers. The Corsair Vengeance RGB DDR5 controls its lighting via iCUE software through the DIMM slots — no separate header connection is needed for the RAM.
+
+---
+
+## Rack — External Connections
+
+Covers power distribution from the UPS and network topology through the patch panel and switch. Two separate diagrams for clarity. The Desktop/Gaming PC motherboard is unspecified here — add its NIC count when known.
+
+---
+
+### Power Distribution
+
+The CP1500PFCRM2U has 8 outlets: **6 battery backup + surge** and **2 surge-only**. Assign battery backup to anything that needs graceful shutdown. Assign surge-only to lower-priority devices.
+
+```mermaid
+graph TD
+    WALL["Mains / Wall Outlet"]
+
+    subgraph UPS_SG["CyberPower CP1500PFCRM2U — 2U"]
+        UPS_BB["Battery Backup + Surge\n6 outlets"]
+        UPS_SG2["Surge Only\n2 outlets"]
+    end
+
+    subgraph SERVERS["Bottom — Servers"]
+        NAS_PSU["NAS Node\nCorsair RM750e"]
+        APP_PSU["App Server\nCorsair RM750e"]
+        DSK_PSU["Desktop / Gaming PC\nCorsair RM750e"]
+    end
+
+    subgraph NETWORK["Middle — Network"]
+        SW["TP-Link TL-SG1024DE\nSwitch"]
+    end
+
+    subgraph TOPDEV["Top — Low-Power Devices"]
+        HA["Home Assistant\nMachine"]
+        PI["Raspberry Pi\nShelf"]
+    end
+
+    WALL -->|"Mains"| UPS_BB
+    WALL -->|"Mains"| UPS_SG2
+
+    UPS_BB -->|"Outlet 1"| NAS_PSU
+    UPS_BB -->|"Outlet 2"| APP_PSU
+    UPS_BB -->|"Outlet 3"| DSK_PSU
+    UPS_BB -->|"Outlet 4"| SW
+
+    UPS_SG2 -->|"Outlet 7"| HA
+    UPS_SG2 -->|"Outlet 8"| PI
+```
+
+---
+
+### Network Topology
+
+All machines connect to the patch panel via a short Cat6 cable from their NIC to the rear keystone port. The front of the patch panel connects to the switch via 0.5ft patch cables. The switch uplinks to the home router.
+
+```mermaid
+graph LR
+    ROUTER["Home Router\n(WAN / Uplink)"]
+
+    subgraph RACK_NET["Rack Network"]
+        SW["TP-Link TL-SG1024DE\n24-Port Switch"]
+
+        subgraph PP_SG["Patch Panel — 24-Port"]
+            PP1["Port 1 — NAS"]
+            PP2["Port 2 — App Server"]
+            PP3["Port 3 — Desktop"]
+            PP4["Port 4 — Home Assistant"]
+            PP5["Port 5 — Pi / Pi Shelf"]
+            PP_UP["Port 24 — Uplink"]
+        end
+    end
+
+    subgraph DEVICES["Devices"]
+        NAS["NAS Node\n1GbE NIC"]
+        APP["App Server\n2.5GbE NIC"]
+        DSK["Desktop / Gaming PC\nNIC"]
+        HA["Home Assistant"]
+        PI["Raspberry Pi Shelf"]
+    end
+
+    ROUTER -->|"Cat6 — uplink"| SW
+
+    SW -->|"0.5ft patch — port 1"| PP1
+    SW -->|"0.5ft patch — port 2"| PP2
+    SW -->|"0.5ft patch — port 3"| PP3
+    SW -->|"0.5ft patch — port 4"| PP4
+    SW -->|"0.5ft patch — port 5"| PP5
+
+    PP1 -->|"Cat6 — rear keystone"| NAS
+    PP2 -->|"Cat6 — rear keystone"| APP
+    PP3 -->|"Cat6 — rear keystone"| DSK
+    PP4 -->|"Cat6 — rear keystone"| HA
+    PP5 -->|"Cat6 — rear keystone"| PI
+```
+
+---
+
+### UPS Management
+
+The UPS connects to the NAS via USB for NUT. The NAS NUT server then signals other machines over the LAN — no additional physical cables required between the UPS and other nodes.
+
+```mermaid
+graph LR
+    UPS["CyberPower CP1500PFCRM2U"]
+
+    NAS["NAS\nNUT Master\nTrueNAS SCALE"]
+    APP["App Server\nNUT Client\nUbuntu Server"]
+    DSK["Desktop\nNUT Client"]
+    HA["Home Assistant\nNUT Client"]
+
+    UPS -->|"USB cable — physical"| NAS
+    NAS -->|"NUT protocol — LAN"| APP
+    NAS -->|"NUT protocol — LAN"| DSK
+    NAS -->|"NUT protocol — LAN"| HA
+```
+
+---
+
+### Notes
+
+- **UPS outlet priority:** The three server PSUs and the switch are on battery backup outlets — these are the machines that need time to shut down gracefully. HA and Pi are on surge-only as they are lower priority and can tolerate a hard power loss. Adjust if your HA machine runs automations that need a clean shutdown.
+- **Switch on battery backup:** Keeping the switch alive during a power event ensures NUT broadcast signals can still reach client machines (App Server, Desktop, HA) before they shut down.
+- **Network speed note:** The TL-SG1024DE is a 1GbE switch. The App Server's Z790 UD AX has a 2.5GbE NIC — it will negotiate down to 1GbE at this switch. If 2.5GbE becomes a bottleneck (e.g., heavy NAS transfers), a switch upgrade would be the fix.
+- **Patch panel port assignment:** Ports 1–5 in the diagram are suggestions — assign however suits your labelling preference. Leave ports 6–23 spare for expansion. Port 24 is recommended for the uplink to keep it visually separated.
+- **0.5ft patch cables:** Used for switch → patch panel front connections (same rack, adjacent U positions). The 6ft patch cables are for any connections that need more reach — HA machine, Pi shelf, or future devices outside the rack.
+- **Desktop NIC:** NIC speed on the Desktop/Gaming PC depends on the original motherboard — update the diagram label once confirmed.
