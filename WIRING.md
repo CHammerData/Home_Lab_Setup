@@ -43,10 +43,10 @@ graph LR
     %% ── POWER ───────────────────────────────────────────────────
     PSU -->|"24-pin ATX"| MB
     PSU -->|"8-pin EPS 4+4"| MB
-    PSU -->|"SATA Pwr Cable 1\n3 connectors"| HDD1
+    PSU -->|"SATA Pwr Cable\n4 connectors"| HDD1
     HDD1 -.->|"daisy-chain"| HDD2
     HDD2 -.->|"daisy-chain"| HDD3
-    PSU -->|"SATA Pwr Cable 2\n4 connectors"| HDD4
+    HDD3 -.->|"daisy-chain"| HDD4
     PSU -->|"Molex Cable\n4 connectors"| FG_F
     FG_F -.->|"daisy-chain"| FG_M
     FG_M -.->|"daisy-chain"| FG_R
@@ -79,11 +79,10 @@ graph LR
 | :--- | :--- | :--- | :--- |
 | 24-pin ATX | PSU | MB — 24-pin ATX | 1 of 1 |
 | 8-pin EPS (4+4) | PSU | MB — CPU_PWR1 | 1 of 2 included |
-| SATA Power Cable 1 (3-conn) | PSU | HDD1 → HDD2 → HDD3 (daisy-chain) | 3 of 3 |
-| SATA Power Cable 2 (4-conn) | PSU | HDD4 | 1 of 4 |
+| SATA Power Cable (4-conn) | PSU | HDD1 → HDD2 → HDD3 → HDD4 (daisy-chain) | 4 of 4 |
 | Molex Cable (4-conn) | PSU | Front fans → Mid fans → Rear fans (daisy-chain) | 3 of 4 |
 
-> **Unused PSU cables (leave unplugged):** 2nd EPS 8-pin, 12VHPWR (16-pin), both PCIe 6+2 cables.
+> **Unused PSU cables (leave unplugged):** 2nd EPS 8-pin, 12VHPWR (16-pin), both PCIe 6+2 cables, 3-connector SATA power cable.
 
 #### SATA Data
 
@@ -123,7 +122,7 @@ graph LR
 
 - **Fan power:** All 8 case fans use 4-pin Molex connectors and are grouped by location (front / mid / rear). Each group daisy-chains its fans together sharing one Molex connector off the cable. Only 3 of the 4 available Molex connectors on the RM750e's Molex cable are needed — no splitter required.
 - **Single EPS cable:** The i3-12100 requires only one 8-pin EPS connection (CPU_PWR1). The second EPS cable included with the RM750e is not needed.
-- **SATA power headroom:** SATA Power Cable 2 has 3 spare connectors — available for additional drives or a SATA-powered device in future.
+- **SATA power:** One 4-connector SATA power cable daisy-chains all four drives. The 3-connector cable is unused — store it with the other spare cables.
 - **Airflow direction:** Front and mid fans draw air in; rear fans exhaust. Ensure CPU cooler orientation aligns with this front-to-back flow.
 - **Cable management:** The RSV-L4500U is a 4U chassis with significant internal depth. Route SATA data cables along the bottom channel to keep them clear of the fan path between the HDD bays and the rear fans.
 
