@@ -126,3 +126,111 @@ graph LR
 - **SATA power headroom:** SATA Power Cable 2 has 3 spare connectors — available for additional drives or a SATA-powered device in future.
 - **Airflow direction:** Front and mid fans draw air in; rear fans exhaust. Ensure CPU cooler orientation aligns with this front-to-back flow.
 - **Cable management:** The RSV-L4500U is a 4U chassis with significant internal depth. Route SATA data cables along the bottom channel to keep them clear of the fan path between the HDD bays and the rear fans.
+
+---
+
+## App Server
+
+**Motherboard:** Gigabyte Z790 UD AX
+**PSU:** Corsair RM750e 750W (fully modular)
+**Chassis:** Rosewill RSV-L4500U
+
+### Diagram
+
+```mermaid
+graph LR
+    PSU["Corsair RM750e\n750W Fully Modular"]
+
+    subgraph MB_SG["Gigabyte Z790 UD AX"]
+        MB["Motherboard\nHeaders & Ports"]
+        CPU["Intel i5-13500\nLGA1700 Socket"]
+        COOLER["Stock Box Cooler\n4-pin PWM Fan"]
+        RAM["2x 16GB Corsair Vengeance RGB DDR5\nDIMM_A2 + DIMM_B2"]
+        SSD1["Samsung 980 PRO 2TB — Disk 1\nM.2 Slot 1 — OS + Docker"]
+        SSD2["Samsung 980 PRO 2TB — Disk 2\nM.2 Slot 2 — Storage"]
+        GPU["RTX 2070 Super\nPCIEX16 Slot (top)"]
+    end
+
+    subgraph CASE["Rosewill RSV-L4500U"]
+        FG_F["Front Fan Group\n3x 120mm — Molex"]
+        FG_M["Mid Fan Group\n3x 120mm — Molex"]
+        FG_R["Rear Fan Group\n2x 80mm — Molex"]
+        FP["Front Panel\nPWR / RST / PWR LED / HDD LED"]
+        SPK["PC Speaker\nBuzzer"]
+        USB_FP["Front USB 3.0\n2 ports"]
+    end
+
+    %% ── POWER ───────────────────────────────────────────────────
+    PSU -->|"24-pin ATX"| MB
+    PSU -->|"8-pin EPS Cable 1 — CPU_PWR1"| MB
+    PSU -->|"8-pin EPS Cable 2 — CPU_PWR2"| MB
+    PSU -->|"PCIe dual-head 6+2\n(both connectors)"| GPU
+    PSU -->|"Molex Cable\n4 connectors"| FG_F
+    FG_F -.->|"daisy-chain"| FG_M
+    FG_M -.->|"daisy-chain"| FG_R
+
+    %% ── CPU / COOLER / RAM / SSDs / GPU ─────────────────────────
+    CPU -->|"direct — LGA1700"| MB
+    COOLER -->|"4-pin PWM — CPU_FAN1"| MB
+    RAM -->|"direct — DDR5 DIMMs A2 + B2"| MB
+    SSD1 -->|"direct — M.2 Slot 1"| MB
+    SSD2 -->|"direct — M.2 Slot 2"| MB
+    GPU -->|"direct — PCIEX16"| MB
+
+    %% ── FRONT PANEL ──────────────────────────────────────────────
+    FP -->|"2-pin headers — F_PANEL"| MB
+    SPK -->|"4-pin — F_PANEL"| MB
+    USB_FP -->|"20-pin — USB 3.2 Gen 1 header"| MB
+```
+
+---
+
+### Connection Reference
+
+#### Power
+
+| Cable | From | To | Connectors Used |
+| :--- | :--- | :--- | :--- |
+| 24-pin ATX | PSU | MB — 24-pin ATX | 1 of 1 |
+| 8-pin EPS Cable 1 (4+4) | PSU | MB — CPU_PWR1 | 1 of 2 included |
+| 8-pin EPS Cable 2 (4+4) | PSU | MB — CPU_PWR2 | 2 of 2 included |
+| PCIe dual-head 6+2 | PSU | RTX 2070 Super (both 8-pin sockets) | 2 of 2 connectors on cable |
+| Molex Cable (4-conn) | PSU | Front fans → Mid fans → Rear fans (daisy-chain) | 3 of 4 |
+
+> **Unused PSU cables (leave unplugged):** 12VHPWR (16-pin), single-head PCIe 6+2, both SATA power cables.
+
+#### Direct / No-Cable Connections
+
+| Component | Connection |
+| :--- | :--- |
+| Intel i5-13500 | Seats directly into LGA1700 socket |
+| Stock box cooler fan | 4-pin PWM cable → CPU_FAN1 header |
+| 2× 16GB Corsair Vengeance RGB DDR5 | Seats directly into **DIMM_A2 + DIMM_B2** (dual-channel) |
+| Samsung 980 PRO 2TB — Disk 1 | Seats directly into **M.2 Slot 1** (use topmost slot — CPU-direct) |
+| Samsung 980 PRO 2TB — Disk 2 | Seats directly into **M.2 Slot 2** |
+| RTX 2070 Super | Seats directly into **PCIEX16** (top full-length slot) |
+
+#### Front Panel
+
+| Signal | Header on MB | Notes |
+| :--- | :--- | :--- |
+| Power button | F_PANEL | 2-pin |
+| Reset button | F_PANEL | 2-pin |
+| Power LED | F_PANEL | 2-pin, polarity matters |
+| HDD activity LED | F_PANEL | 2-pin, polarity matters |
+| LAN activity LED | — | Not exposed on F_PANEL; leave disconnected |
+| PC Speaker / Buzzer | F_PANEL | 4-pin |
+| Front USB 3.0 (2 ports) | USB 3.2 Gen 1 header | 20-pin connector |
+| Front panel audio | — | RSV-L4500U has no front audio port; F_AUDIO header unused |
+
+---
+
+### Notes
+
+- **Both EPS cables required:** The i5-13500 on Z790 requires both 8-pin CPU power connectors (CPU_PWR1 + CPU_PWR2). Unlike the NAS, both included RM750e EPS cables are used here.
+- **GPU power:** The RTX 2070 Super has two 8-pin PCIe sockets. Use the **dual-head 6+2 cable** — it has two device-side connectors on a single PSU-side plug, covering both sockets with one cable. The single-head PCIe cable is not needed.
+- **No SATA cables at all:** Both storage drives are NVMe — neither SATA power cable nor any SATA data cables are used in this build.
+- **12VHPWR unused:** The RM750e's 12VHPWR (16-pin) cable is for PCIe 5.0 GPUs only. The RTX 2070 Super does not use it — leave it unplugged.
+- **M.2 slot choice:** Verify the exact slot labels in the Z790 UD AX manual. Use the topmost slot (closest to CPU) for Disk 1 (OS/Docker) as it is typically CPU-direct with the lowest latency. Check the manual for any SATA port conflicts when both slots are populated — on Z790 this is uncommon but worth confirming.
+- **Fan headers available but unused:** The Z790 UD AX has 5 fan/pump headers on board. All 8 case fans are Molex-powered from the PSU — no fan headers are used. These are available for aftermarket cooling if added later.
+- **RGB headers available:** The Z790 UD AX has 2× ARGB and 2× RGB headers. The Corsair Vengeance RGB DDR5 controls its lighting via iCUE software through the DIMM slots — no separate header connection is needed for the RAM.
