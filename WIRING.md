@@ -32,7 +32,7 @@ graph LR
     end
 
     subgraph CASE["Rosewill RSV-L4500U"]
-        FG_F["Front Fan Group\n3x 120mm — Molex"]
+        FG_F["Front Fans\n2x 120mm — 4-pin PWM"]
         FG_M["Mid Fan Group\n3x 120mm — Molex"]
         FG_R["Rear Fan Group\n2x 80mm — Molex"]
         FP["Front Panel\nPWR / RST / PWR LED\nHDD LED / LAN LED"]
@@ -47,13 +47,13 @@ graph LR
     HDD1 -.->|"daisy-chain"| HDD2
     HDD2 -.->|"daisy-chain"| HDD3
     HDD3 -.->|"daisy-chain"| HDD4
-    PSU -->|"Molex Cable\n4 connectors"| FG_F
-    FG_F -.->|"daisy-chain"| FG_M
+    PSU -->|"Molex Cable\n4 connectors"| FG_M
     FG_M -.->|"daisy-chain"| FG_R
 
     %% ── CPU / COOLER / RAM / SSD ─────────────────────────────────
     CPU -->|"direct — LGA1700"| MB
     COOLER -->|"4-pin PWM — CPU_FAN1"| MB
+    FG_F -->|"4-pin PWM — CHA_FAN1 + CHA_FAN2"| MB
     RAM -->|"direct — DDR5 DIMM"| MB
     SSD -->|"direct — M2_1 slot"| MB
 
@@ -80,7 +80,9 @@ graph LR
 | 24-pin ATX | PSU | MB — 24-pin ATX | 1 of 1 |
 | 8-pin EPS (4+4) | PSU | MB — CPU_PWR1 | 1 of 2 included |
 | SATA Power Cable (4-conn) | PSU | HDD1 → HDD2 → HDD3 → HDD4 (daisy-chain) | 4 of 4 |
-| Molex Cable (4-conn) | PSU | Front fans → Mid fans → Rear fans (daisy-chain) | 3 of 4 |
+| Molex Cable (4-conn) | PSU | Mid fans → Rear fans (daisy-chain) | 2 of 4 |
+| — | MB — CHA_FAN1 | Front fan 1 (4-pin PWM) | — |
+| — | MB — CHA_FAN2 | Front fan 2 (4-pin PWM) | — |
 
 > **Unused PSU cables (leave unplugged):** 2nd EPS 8-pin, 12VHPWR (16-pin), both PCIe 6+2 cables, 3-connector SATA power cable.
 
@@ -120,7 +122,8 @@ graph LR
 
 ### Notes
 
-- **Fan power:** All 8 case fans use 4-pin Molex connectors and are grouped by location (front / mid / rear). Each group daisy-chains its fans together sharing one Molex connector off the cable. Only 3 of the 4 available Molex connectors on the RM750e's Molex cable are needed — no splitter required.
+- **Front fans (4-pin PWM):** The 2 front fans connect directly to motherboard headers CHA_FAN1 and CHA_FAN2. This gives the motherboard PWM speed control and RPM monitoring for these fans. Check the B760 PRO RS manual for exact header locations — they are typically labelled CHA_FAN on ASRock boards.
+- **Mid and rear fans (Molex):** The remaining 6 fans (3x mid + 2x rear) are Molex-powered from the PSU. Each group daisy-chains internally, requiring only 2 of the 4 available Molex connectors on the RM750e's Molex cable.
 - **Single EPS cable:** The i3-12100 requires only one 8-pin EPS connection (CPU_PWR1). The second EPS cable included with the RM750e is not needed.
 - **SATA power:** One 4-connector SATA power cable daisy-chains all four drives. The 3-connector cable is unused — store it with the other spare cables.
 - **Airflow direction:** Front and mid fans draw air in; rear fans exhaust. Ensure CPU cooler orientation aligns with this front-to-back flow.
@@ -151,7 +154,7 @@ graph LR
     end
 
     subgraph CASE["Rosewill RSV-L4500U"]
-        FG_F["Front Fan Group\n3x 120mm — Molex"]
+        FG_F["Front Fans\n2x 120mm — 4-pin PWM"]
         FG_M["Mid Fan Group\n3x 120mm — Molex"]
         FG_R["Rear Fan Group\n2x 80mm — Molex"]
         FP["Front Panel\nPWR / RST / PWR LED / HDD LED"]
@@ -164,13 +167,13 @@ graph LR
     PSU -->|"8-pin EPS Cable 1 — CPU_PWR1"| MB
     PSU -->|"8-pin EPS Cable 2 — CPU_PWR2"| MB
     PSU -->|"PCIe dual-head 6+2\n(both connectors)"| GPU
-    PSU -->|"Molex Cable\n4 connectors"| FG_F
-    FG_F -.->|"daisy-chain"| FG_M
+    PSU -->|"Molex Cable\n4 connectors"| FG_M
     FG_M -.->|"daisy-chain"| FG_R
 
     %% ── CPU / COOLER / RAM / SSDs / GPU ─────────────────────────
     CPU -->|"direct — LGA1700"| MB
     COOLER -->|"4-pin PWM — CPU_FAN1"| MB
+    FG_F -->|"4-pin PWM — SYS_FAN1 + SYS_FAN2"| MB
     RAM -->|"direct — DDR5 DIMMs A2 + B2"| MB
     SSD1 -->|"direct — M.2 Slot 1"| MB
     SSD2 -->|"direct — M.2 Slot 2"| MB
@@ -194,7 +197,9 @@ graph LR
 | 8-pin EPS Cable 1 (4+4) | PSU | MB — CPU_PWR1 | 1 of 2 included |
 | 8-pin EPS Cable 2 (4+4) | PSU | MB — CPU_PWR2 | 2 of 2 included |
 | PCIe dual-head 6+2 | PSU | RTX 2070 Super (both 8-pin sockets) | 2 of 2 connectors on cable |
-| Molex Cable (4-conn) | PSU | Front fans → Mid fans → Rear fans (daisy-chain) | 3 of 4 |
+| Molex Cable (4-conn) | PSU | Mid fans → Rear fans (daisy-chain) | 2 of 4 |
+| — | MB — SYS_FAN1 | Front fan 1 (4-pin PWM) | — |
+| — | MB — SYS_FAN2 | Front fan 2 (4-pin PWM) | — |
 
 > **Unused PSU cables (leave unplugged):** 12VHPWR (16-pin), single-head PCIe 6+2, both SATA power cables.
 
@@ -231,7 +236,8 @@ graph LR
 - **No SATA cables at all:** Both storage drives are NVMe — neither SATA power cable nor any SATA data cables are used in this build.
 - **12VHPWR unused:** The RM750e's 12VHPWR (16-pin) cable is for PCIe 5.0 GPUs only. The RTX 2070 Super does not use it — leave it unplugged.
 - **M.2 slot choice:** Verify the exact slot labels in the Z790 UD AX manual. Use the topmost slot (closest to CPU) for Disk 1 (OS/Docker) as it is typically CPU-direct with the lowest latency. Check the manual for any SATA port conflicts when both slots are populated — on Z790 this is uncommon but worth confirming.
-- **Fan headers available but unused:** The Z790 UD AX has 5 fan/pump headers on board. All 8 case fans are Molex-powered from the PSU — no fan headers are used. These are available for aftermarket cooling if added later.
+- **Front fans (4-pin PWM):** The 2 front fans connect to SYS_FAN1 and SYS_FAN2 on the Z790 UD AX, giving PWM speed control and RPM monitoring. The remaining system fan header and pump header are free for future use.
+- **Mid and rear fans (Molex):** The remaining 6 fans (3x mid + 2x rear) are Molex-powered from the PSU, using 2 of the 4 available Molex connectors.
 - **RGB headers available:** The Z790 UD AX has 2× ARGB and 2× RGB headers. The Corsair Vengeance RGB DDR5 controls its lighting via iCUE software through the DIMM slots — no separate header connection is needed for the RAM.
 
 ---
