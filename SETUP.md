@@ -6,11 +6,12 @@ This guide walks through the full build and deployment from bare hardware to a r
 
 ## Phase 1: NAS Setup (TrueNAS SCALE)
 
-1. **Install OS:** Install TrueNAS SCALE to the dedicated M.2 NVMe boot SSD — **not** to any of the IronWolf HDDs. During the installer, select only the M.2 drive as the boot device. TrueNAS SCALE 24.10+ will generate an active alert if it detects a USB device as the boot pool; a dedicated internal SSD avoids this entirely.
-2. **Create Storage Pool:** Create a ZFS pool with RAID-Z1 across your 4 drives.
-3. **Create Datasets:** Create datasets for media and downloads (e.g., `/mnt/pool/media`, `/mnt/pool/downloads`).
-4. **Enable Shares:** Turn on the NFS service for the App Server to mount. Optionally enable SMB for Windows access.
-5. **Configure UPS (NUT Master):** Connect the CyberPower CP1500PFCRM2U USB cable to the NAS. In TrueNAS SCALE go to **System Settings → Services → UPS** and configure:
+1. **Configure BIOS:** Before installing the OS, enter the ASRock BIOS (Delete at POST) and set the fan headers for the two front case fans — **CHA_FAN1** and **CHA_FAN2** — to **System** fan mode rather than CPU fan mode. Without this the board may throw a fan-stop warning when the front fans spin down at low RPM.
+2. **Install OS:** Install TrueNAS SCALE to the dedicated M.2 NVMe boot SSD — **not** to any of the IronWolf HDDs. During the installer, select only the M.2 drive as the boot device. TrueNAS SCALE 24.10+ will generate an active alert if it detects a USB device as the boot pool; a dedicated internal SSD avoids this entirely.
+3. **Create Storage Pool:** Create a ZFS pool with RAID-Z1 across your 4 drives.
+4. **Create Datasets:** Create datasets for media and downloads (e.g., `/mnt/pool/media`, `/mnt/pool/downloads`).
+5. **Enable Shares:** Turn on the NFS service for the App Server to mount. Optionally enable SMB for Windows access.
+6. **Configure UPS (NUT Master):** Connect the CyberPower CP1500PFCRM2U USB cable to the NAS. In TrueNAS SCALE go to **System Settings → Services → UPS** and configure:
     - **Identifier:** `cyberpower`
     - **Driver:** `usbhid-ups` (correct HID driver for CyberPower USB models)
     - **Port:** `auto`
@@ -25,8 +26,9 @@ This guide walks through the full build and deployment from bare hardware to a r
 
 ## Phase 2: App Server Setup (Ubuntu Server)
 
-1. **Install OS:** Install Ubuntu Server LTS to **Disk 1 (Samsung 980 PRO 2TB)** with the OpenSSH server enabled for headless management. Disk 2 is left unformatted at install time for use as additional storage or backup staging.
-2. **Configure UPS Client (NUT):** Install the NUT client so the App Server shuts down gracefully when the UPS signals low battery:
+1. **Configure BIOS:** Before installing the OS, enter the Gigabyte BIOS (Delete at POST) and set the fan headers for the two front case fans — **SYS_FAN1** and **SYS_FAN2** — to **System** fan mode rather than CPU fan mode. Without this the board may throw a fan-stop warning when the front fans spin down at low RPM.
+2. **Install OS:** Install Ubuntu Server LTS to **Disk 1 (Samsung 980 PRO 2TB)** with the OpenSSH server enabled for headless management. Disk 2 is left unformatted at install time for use as additional storage or backup staging.
+3. **Configure UPS Client (NUT):** Install the NUT client so the App Server shuts down gracefully when the UPS signals low battery:
     ```bash
     sudo apt install nut-client
     ```
@@ -39,13 +41,13 @@ This guide walks through the full build and deployment from bare hardware to a r
     ```bash
     sudo systemctl enable nut-client && sudo systemctl start nut-client
     ```
-3. **Install GPU Drivers:** Install the proprietary Nvidia drivers for the RTX 2070 Super.
-3. **Install Docker:** Install Docker Engine and the NVIDIA Container Toolkit to allow containers to access the GPU.
-4. **Install Tailscale:**
+4. **Install GPU Drivers:** Install the proprietary Nvidia drivers for the RTX 2070 Super.
+5. **Install Docker:** Install Docker Engine and the NVIDIA Container Toolkit to allow containers to access the GPU.
+6. **Install Tailscale:**
     ```bash
     curl -fsSL https://tailscale.com/install.sh | sh
     ```
-5. **Mount NAS Storage:** Edit `/etc/fstab` to permanently mount the NFS shares:
+7. **Mount NAS Storage:** Edit `/etc/fstab` to permanently mount the NFS shares:
     ```
     <NAS_IP>:/mnt/pool/media    /mnt/nas/media    nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
     <NAS_IP>:/mnt/pool/downloads /mnt/nas/downloads nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
