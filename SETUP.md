@@ -4,6 +4,60 @@ This guide walks through the full build and deployment from bare hardware to a r
 
 ---
 
+## Phase 0: Network / Router Setup
+
+Do this before anything else. The goal is to ensure the NAS and App Server always get the same IP address after a reboot, and that you can reach services by name instead of memorizing IPs.
+
+### Step 1 — DHCP Reservations
+
+Log in to your router and create a DHCP reservation for each server by MAC address. This pins each machine to a fixed IP without requiring a static IP configured on the OS itself (easier to manage and survives reinstalls).
+
+| Machine | Suggested IP | Where to find MAC |
+| :--- | :--- | :--- |
+| NAS (TrueNAS) | e.g. `192.168.1.10` | TrueNAS web UI → **Network > Interfaces**, or check your router's current lease table |
+| App Server (Ubuntu) | e.g. `192.168.1.20` | `ip link show` on the server, or your router's lease table |
+
+Once saved, reboot each machine and confirm they come back on the expected IPs before continuing.
+
+> **Why not static IPs on the OS?** Static IPs set at the OS level bypass DHCP entirely, which means your router's lease table won't show them and you lose the router as a single source of truth. DHCP reservations give you the same stability with less friction.
+
+### Step 2 — Local DNS (Hostnames)
+
+With reservations set, you can optionally add local DNS entries so you can type `truenas.home` instead of `192.168.1.10`. There are two approaches depending on your router:
+
+**Option A — Router DNS (preferred if your router supports it)**
+
+Most consumer routers (UniFi, pfSense, OPNsense, some Eero/Asus models) let you add local DNS host overrides directly. Add one entry per service you want to reach by name:
+
+| Hostname | Points to |
+| :--- | :--- |
+| `truenas.home` | `192.168.1.10` (NAS reserved IP) |
+| `appserver.home` | `192.168.1.20` (App Server reserved IP) |
+
+Individual Docker services (Jellyfin, Grafana, etc.) are accessed via Nginx Proxy Manager on the App Server — you don't need a separate DNS entry per container. Once NPM is set up in Phase 4, add a single wildcard or per-service entry pointing to `192.168.1.20` and let NPM route by hostname.
+
+**Option B — Hosts file (quick fallback, per-machine only)**
+
+If your router doesn't support local DNS, you can add entries to `C:\Windows\System32\drivers\etc\hosts` (Windows) or `/etc/hosts` (Linux/Mac) on each client machine:
+
+```
+192.168.1.10  truenas.home
+192.168.1.20  appserver.home
+```
+
+This only works on the machine where you edit the file — it does not propagate to other devices on the network.
+
+### Step 3 — Record Your IPs
+
+Note the reserved IPs here — you'll substitute them for `<NAS_IP>` and `<server-ip>` placeholders throughout the rest of this guide:
+
+```
+NAS_IP=192.168.1.10
+APP_SERVER_IP=192.168.1.20
+```
+
+---
+
 ## Phase 1: NAS Setup (TrueNAS SCALE)
 
 1. **Configure BIOS:** Before installing the OS, enter the ASRock BIOS (Delete at POST) and set the fan headers for the two front case fans — **CHA_FAN1** and **CHA_FAN2** — to **System** fan mode rather than CPU fan mode. Without this the board may throw a fan-stop warning when the front fans spin down at low RPM.
