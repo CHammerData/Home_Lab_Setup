@@ -1,0 +1,26 @@
+# Secrets & credentials — never commit these
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Claude Code local settings
+.claude/
+
+# Config files that may contain real values (keep templates, ignore actuals)
+config/authelia/users_database.yml
+config/authelia/configuration.yml
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor noise
+.vscode/
+*.swp
+*.swo
