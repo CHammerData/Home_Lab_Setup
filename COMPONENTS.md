@@ -13,8 +13,8 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | Node | Expected Total | Actual Spent | Still to Go | Saved / (Over) | Status |
 | :--- | ---: | ---: | ---: | ---: | :--- |
 | Shared / Rack | $1,295.00 | $1,260.99 | $0.00 | +$34.01 | Complete ✓ |
-| Desktop Conversion | $1,111.00 | $1,146.24 | $0.00 | ($35.24) | Complete ✓ |
-| NAS Node | $1,882.00 | $1,643.50 | $0.00 | +$238.50 | Complete ✓ |
+| Desktop Conversion | $700.00 | $794.75 | $0.00 | ($94.75) | Complete ✓ |
+| NAS Node | $2,293.00 | $1,994.99 | $0.00 | +$298.01 | Complete ✓ |
 | App Server | $1,711.00 | $1,660.21 | $0.00 | +$50.79 | Complete ✓ |
 | **GRAND TOTAL** | **$5,999.00** | **$5,710.94** | **$0.00** | **+$288.06** | **Complete ✓** |
 
@@ -52,17 +52,17 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 
 | Component | Model | Qty | Unit Price | Actual Price | Expected Total | Actual Total | Saved / (Over) | Status | Notes |
 | :--- | :--- | :---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
-| GPU Upgrade | ASUS ProArt GeForce RTX 4070 Super OC | 1 | $700.00 | $794.75 | $700.00 | $794.75 | ($94.75)| Received | Replaces RTX 2070 Super (moved to App Server). Card is 266mm — confirmed fits RSV-L4500U. |
-| Memory | 32GB Corsair VENGEANCE RGB DDR5 | 1 | $411.00 | $351.49 | $411.00 | $351.49 | +$59.51 | Received | DDR5 shortage pricing — premium kit. |
+| GPU Upgrade | ASUS ProArt GeForce RTX 4070 Super OC | 1 | $700.00 | $794.75 | $700.00 | $794.75 | ($94.75) | Received | Replaces RTX 2070 Super (moved to App Server). Card is 266mm — confirmed fits RSV-L4500U. |
+| Memory | 32GB DDR4 (existing) | 1 | $0.00 | $0.00 | $0.00 | $0.00 | — | Owned | Original DDR4 kit. DDR5 kit purchased for this node was installed in the NAS instead — new DDR5 required when motherboard is upgraded (see Upgrade Path). |
 | Rack Chassis | Listed in Shared / Rack | — | — | — | — | — | — | — | — |
 
-**Desktop Conversion Expected Total: $1,111.00**
+**Desktop Conversion Expected Total: $700.00**
 
-**Desktop Conversion Actual Spent: $1,146.24** *(all items ordered)*
+**Desktop Conversion Actual Spent: $794.75**
 
 **Desktop Conversion Still to Go: $0.00** ✓
 
-**Desktop Conversion Saved / (Over): ($35.24)**
+**Desktop Conversion Saved / (Over): ($94.75)**
 
 ---
 
@@ -78,19 +78,19 @@ Tracks all physical hardware across every node in the rack. Update the **Status*
 | :--- | :--- | :---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
 | CPU | Intel Core i3-12100 | 1 | $110.00 | $95.61 | $110.00 | $95.61 | +$14.39 | Received | LGA1700 socket. |
 | Motherboard | ASRock B760 PRO RS | 1 | $150.00 | $109.99 | $150.00 | $109.99 | +$40.01 | Received | LGA1700, DDR5, 6x SATA ports. |
-| Memory | 16GB DDR5 | 1 | $0.00 | $0.00 | $0.00 | $0.00 | — | Owned | Pulled from gaming desktop. |
+| Memory | 32GB Corsair VENGEANCE RGB DDR5 | 1 | $411.00 | $351.49 | $411.00 | $351.49 | +$59.51 | Received | Originally purchased for Desktop Conversion; installed in NAS instead after discovering desktop RAM was DDR4. |
 | Power Supply | Corsair RM750e 750W | 1 | $121.00 | $92.64 | $121.00 | $92.64 | +$28.36 | Received | 80+ Gold. Adequate for i3-12100 + 4x HDD. |
 | Boot Drive (M.2 SSD) | Inland TN320 256GB NVMe PCIe Gen 3.0x4 M.2 | 1 | $25.00 | $64.99 | $25.00 | $64.99 | ($39.99) | Received | Dedicated TrueNAS boot drive. USB not supported as of SCALE 24.10. M.2 slot on B760 PRO RS. |
 | Storage (HDD) | Seagate IronWolf 12TB NAS HDD | 3 | $369.00 | $318.74 | $1,107.00 | $956.22 | +$150.78 | Received | ZFS RAID-Z1 (~36TB usable). |
 | Storage (HDD) | WD Red Pro 12TB 7200RPM SATA III 3.5" | 1 | $369.00 | $324.05 | $369.00 | $324.05 | +$44.95 | Received | 4th drive to complete RAID-Z1. Mixed models are compatible in ZFS. |
 
-**NAS Node Expected Total: $1,882.00**
+**NAS Node Expected Total: $2,293.00**
 
-**NAS Node Actual Spent: $1,643.50**
+**NAS Node Actual Spent: $1,994.99**
 
 **NAS Node Still to Go: $0.00** ✓
 
-**NAS Node Saved / (Over): +$238.50**
+**NAS Node Saved / (Over): +$298.01**
 
 ---
 
@@ -156,6 +156,6 @@ Future hardware improvements in rough priority order. None are urgent — docume
 | Priority | Component | Current | Target | Est. Cost | Trigger / Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | 1 | Network Switch | TP-Link TL-SG1024DE (1GbE, 24-port) | TP-Link TL-SG3210XHP-M2 (8× 2.5GbE + 2× 10GbE SFP+) | ~$160 | App Server (Z790 UD AX) and NAS (B760 PRO RS) both have 2.5GbE NICs currently capped at 1GbE. No impact on media streaming; bottleneck shows during bulk NAS transfers (~110 MB/s real-world vs ~250 MB/s possible). |
-| 2 | Gaming Desktop — Motherboard | DDR4-era board (existing hardware) | Modern LGA1700 DDR5 motherboard | ~$150–200 | DDR5 RAM (32GB Corsair VENGEANCE RGB, see Desktop Conversion) already purchased and waiting. Upgrade motherboard to unlock it. |
-| 3 | Gaming Desktop — RAM | DDR4 (existing) | 32GB Corsair VENGEANCE RGB DDR5 | Already purchased | Paired with motherboard upgrade above — install both at the same time. The DDR5 kit is on the shelf waiting for the board. |
+| 2 | Gaming Desktop — Motherboard | DDR4-era board (existing hardware) | Modern LGA1700 DDR5 motherboard | ~$150–200 | Buy together with new DDR5 RAM (row 3) to avoid partial compatibility. |
+| 3 | Gaming Desktop — RAM | 32GB DDR4 (existing) | New 32GB DDR5 kit | ~$150–200 | DDR5 kit originally purchased for this node is installed in the NAS. New kit required when motherboard is upgraded. |
 | 4 | Router | Asus consumer router | pfSense / OPNsense appliance (e.g., Protectli VP2420) | ~$300–400 | Current Asus + Pi-hole setup is adequate for the lab as-is. Upgrade when VLAN segmentation (IoT isolation, guest network, lab separation) becomes a priority. The TL-SG1024DE already supports 802.1Q VLANs — the router is the only missing piece. |
