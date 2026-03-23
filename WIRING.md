@@ -306,7 +306,7 @@ graph LR
             PP2["Port 2 — App Server"]
             PP3["Port 3 — Desktop"]
             PP4["Port 4 — Home Assistant"]
-            PP5["Port 5 — Pi / Pi Shelf"]
+            PP5["Port 5 — Pi (Pi-hole)"]
             PP_UP["Port 24 — Uplink"]
         end
     end
@@ -316,7 +316,7 @@ graph LR
         APP["App Server\n2.5GbE NIC"]
         DSK["Desktop / Gaming PC\nNIC"]
         HA["Home Assistant"]
-        PI["Raspberry Pi Shelf"]
+        PI["Raspberry Pi 5\nPi-hole DNS"]
     end
 
     ROUTER -->|"Cat6 — uplink"| SW
