@@ -16,44 +16,72 @@ Log in to your router and create a DHCP reservation for each server by MAC addre
 | :--- | :--- | :--- |
 | NAS (TrueNAS) | e.g. `192.168.1.10` | TrueNAS web UI → **Network > Interfaces**, or check your router's current lease table |
 | App Server (Ubuntu) | e.g. `192.168.1.20` | `ip link show` on the server, or your router's lease table |
+| Raspberry Pi (Pi-hole) | e.g. `192.168.1.5` | Shown at the bottom of the Pi-hole install output, or via `hostname -I` after first boot |
 
 Once saved, reboot each machine and confirm they come back on the expected IPs before continuing.
 
 > **Why not static IPs on the OS?** Static IPs set at the OS level bypass DHCP entirely, which means your router's lease table won't show them and you lose the router as a single source of truth. DHCP reservations give you the same stability with less friction.
 
-### Step 2 — Local DNS (Hostnames)
+### Step 2 — Pi-hole Setup (Raspberry Pi 5)
 
-With reservations set, you can optionally add local DNS entries so you can type `truenas.home` instead of `192.168.1.10`. There are two approaches depending on your router:
+Pi-hole is your network-wide DNS server. It blocks ads and trackers for every device on the network, and — more importantly for your lab — it handles local DNS so every device can resolve hostnames like `truenas.home` without touching each machine's hosts file.
 
-**Option A — Router DNS (preferred if your router supports it)**
+1. **Flash Raspberry Pi OS Lite (64-bit)** to an SD card or USB SSD using [Raspberry Pi Imager](https://www.raspberrypi.com/software/). Before writing, click **Edit Settings** to pre-configure:
+    - **Hostname:** `pihole`
+    - **Username / Password:** set your credentials
+    - **Enable SSH:** checked
+    - **Wi-Fi:** leave blank if using wired Ethernet (recommended — a DNS outage takes down your whole network)
+2. **Boot and SSH in:**
+    ```bash
+    ssh <username>@pihole.local
+    ```
+3. **Update the system:**
+    ```bash
+    sudo apt update && sudo apt upgrade -y
+    ```
+4. **Install Pi-hole:**
+    ```bash
+    curl -sSL https://install.pi-hole.net | bash
+    ```
+    During the interactive installer:
+    - Select your network interface (`eth0` for wired)
+    - Select an upstream DNS provider (Cloudflare `1.1.1.1` or Quad9 `9.9.9.9` are solid choices)
+    - Enable the web admin interface
+    - Enable query logging
+    - **Note the admin password** shown at the end — or set your own with `pihole -a -p`
+5. **Verify the Pi's IP** matches the DHCP reservation from Step 1:
+    ```bash
+    hostname -I
+    ```
+6. **Point your router's DHCP to Pi-hole:** In your Asus router go to **LAN > DHCP Server** and set **DNS Server 1** to the Pi's reserved IP (`192.168.1.5`). Leave DNS Server 2 blank or set `1.1.1.1` as a fallback. Apply and reboot the router.
 
-Most consumer routers (UniFi, pfSense, OPNsense, some Eero/Asus models) let you add local DNS host overrides directly. Add one entry per service you want to reach by name:
+> **Note:** After pointing DHCP to Pi-hole, new leases will resolve through Pi-hole immediately. Existing devices may retain the old DNS until their lease renews — force a renewal on Windows with `ipconfig /release && ipconfig /renew`.
 
-| Hostname | Points to |
+### Step 3 — Local DNS Records (Pi-hole)
+
+With Pi-hole running, add local DNS entries so every device on the network can reach your lab machines by name.
+
+1. Open Pi-hole admin at `http://pihole.local/admin` (or `http://192.168.1.5/admin`).
+2. Go to **Local DNS > DNS Records** and add one entry per machine:
+
+| Domain | IP Address |
 | :--- | :--- |
-| `truenas.home` | `192.168.1.10` (NAS reserved IP) |
-| `appserver.home` | `192.168.1.20` (App Server reserved IP) |
+| `truenas.home` | `192.168.1.10` |
+| `appserver.home` | `192.168.1.20` |
+| `pihole.home` | `192.168.1.5` |
 
-Individual Docker services (Jellyfin, Grafana, etc.) are accessed via Nginx Proxy Manager on the App Server — you don't need a separate DNS entry per container. Once NPM is set up in Phase 4, add a single wildcard or per-service entry pointing to `192.168.1.20` and let NPM route by hostname.
+Individual Docker services (Jellyfin, Grafana, Portainer, etc.) are accessed via Nginx Proxy Manager. Once NPM is set up in Phase 4, add one DNS entry per service pointing to `192.168.1.20` and let NPM route by hostname — no need to add every container's port to DNS.
 
-**Option B — Hosts file (quick fallback, per-machine only)**
+> **Hosts file fallback:** If you need DNS resolution on a machine before Pi-hole is live, temporarily add entries to `C:\Windows\System32\drivers\etc\hosts` (Windows) or `/etc/hosts` (Linux/Mac). Remove them once Pi-hole is resolving correctly — stale hosts file entries override DNS and cause hard-to-debug issues.
 
-If your router doesn't support local DNS, you can add entries to `C:\Windows\System32\drivers\etc\hosts` (Windows) or `/etc/hosts` (Linux/Mac) on each client machine:
+### Step 4 — Record Your IPs
 
-```
-192.168.1.10  truenas.home
-192.168.1.20  appserver.home
-```
-
-This only works on the machine where you edit the file — it does not propagate to other devices on the network.
-
-### Step 3 — Record Your IPs
-
-Note the reserved IPs here — you'll substitute them for `<NAS_IP>` and `<server-ip>` placeholders throughout the rest of this guide:
+Note the reserved IPs here — you'll substitute them for `<NAS_IP>`, `<PI_IP>`, and `<server-ip>` placeholders throughout the rest of this guide:
 
 ```
 NAS_IP=192.168.1.10
 APP_SERVER_IP=192.168.1.20
+PI_IP=192.168.1.5
 ```
 
 ---
@@ -133,6 +161,12 @@ APP_SERVER_IP=192.168.1.20
     # Grafana credentials
     GRAFANA_USER=admin
     GRAFANA_PASSWORD=your_secure_grafana_password
+
+    # Vaultwarden admin panel token (generate with: openssl rand -base64 48)
+    VAULTWARDEN_ADMIN_TOKEN=your_admin_token_here
+
+    # Ntfy base URL — your server's local address, used by other services for push notifications
+    NTFY_BASE_URL=http://192.168.1.20:2586
     ```
 
 2. **Update volume paths:** Search `docker-compose.yml` for all `# Update this path` comments and replace placeholders with your NAS mount points:
@@ -225,6 +259,8 @@ APP_SERVER_IP=192.168.1.20
 1. **Prowlarr → Radarr / Sonarr / Lidarr:** In Prowlarr, go to **Settings > Apps** and add each *Arr app using its container name as the hostname (e.g., `http://radarr:7878`). Prowlarr syncs indexers automatically.
 2. **qBittorrent → Radarr / Sonarr / Lidarr:** In each *Arr app, go to **Settings > Download Clients** and add qBittorrent pointing to `http://gluetun:8080`.
 3. **Seerr → Jellyfin:** Open Seerr at `http://<server-ip>:5055`, follow the setup wizard, sign in with your Jellyfin admin account, then connect Radarr and Sonarr under **Settings > Services**.
+4. **Bazarr → Sonarr / Radarr:** In Bazarr go to **Settings > Sonarr** and add Sonarr at `http://sonarr:8989` with your Sonarr API key. Repeat under **Settings > Radarr** at `http://radarr:7878`. Bazarr will then automatically search and download subtitles matching your existing library.
+5. **FlareSolverr → Prowlarr:** In Prowlarr go to **Settings > Indexers > Proxies** and add a FlareSolverr entry with URL `http://flaresolverr:8191`. Assign it to any indexer that sits behind Cloudflare — the indexer config page has a **FlareSolverr** dropdown once the proxy is saved.
 
 ### Validation Checklist
 
@@ -236,3 +272,168 @@ APP_SERVER_IP=192.168.1.20
 | **HTTPS** | All proxy-exposed services load over HTTPS with a valid certificate |
 | **Monitoring** | Grafana dashboards show live data from Node Exporter |
 | **Backup** | Trigger a manual Duplicati backup and confirm it completes without errors |
+| **Homepage** | Open `http://<server-ip>:3001` — service widgets should populate with live data |
+| **Uptime Kuma** | Open `http://<server-ip>:3002` — add monitors and confirm first status checks pass |
+
+---
+
+## Phase 9: Dashboard Setup (Homepage)
+
+Homepage is a static, highly customizable dashboard. It reads YAML config files and displays live stats from your services via their APIs.
+
+1. **Create the config directory and seed files** before starting the container:
+    ```bash
+    mkdir -p ./config/homepage
+    touch ./config/homepage/services.yaml \
+          ./config/homepage/widgets.yaml \
+          ./config/homepage/bookmarks.yaml \
+          ./config/homepage/settings.yaml
+    ```
+2. **Start the container:**
+    ```bash
+    docker compose up -d homepage
+    ```
+3. Open `http://<server-ip>:3001` — an empty dashboard will load.
+4. **Configure services** by editing `./config/homepage/services.yaml`. Example starter config:
+    ```yaml
+    - Media:
+        - Jellyfin:
+            href: http://jellyfin.home
+            icon: jellyfin.png
+            description: Media Server
+            widget:
+              type: jellyfin
+              url: http://jellyfin:8096
+              key: your_jellyfin_api_key
+        - Seerr:
+            href: http://seerr.home
+            icon: jellyseerr.png
+            description: Media Requests
+    - Automation:
+        - Sonarr:
+            href: http://sonarr.home
+            icon: sonarr.png
+            widget:
+              type: sonarr
+              url: http://sonarr:8989
+              key: your_sonarr_api_key
+        - Radarr:
+            href: http://radarr.home
+            icon: radarr.png
+            widget:
+              type: radarr
+              url: http://radarr:7878
+              key: your_radarr_api_key
+    - Monitoring:
+        - Grafana:
+            href: http://grafana.home
+            icon: grafana.png
+        - Uptime Kuma:
+            href: http://uptime.home
+            icon: uptime-kuma.png
+    ```
+5. Changes to YAML files are picked up immediately — no container restart needed. Full documentation at [gethomepage.dev](https://gethomepage.dev/).
+
+---
+
+## Phase 10: Uptime Monitoring (Uptime Kuma)
+
+Uptime Kuma provides a clean status dashboard and push alerts when services go down. It complements Grafana (which shows metrics) by answering the simpler question: is it up right now?
+
+1. Open `http://<server-ip>:3002` and create an admin account on first launch.
+2. Add a monitor for each service — use **HTTP(s)** type:
+
+| Monitor | URL | Interval |
+| :--- | :--- | :--- |
+| Sonarr | `http://sonarr:8989/health` | 60s |
+| Radarr | `http://radarr:7878/health` | 60s |
+| Lidarr | `http://lidarr:8686/health` | 60s |
+| Prowlarr | `http://prowlarr:9696/health` | 60s |
+| Jellyfin | `http://jellyfin:8096/health` | 60s |
+| Bazarr | `http://bazarr:6767/health` | 60s |
+| Grafana | `http://grafana:3000/api/health` | 60s |
+| NPM | `http://nginx-proxy-manager:81/api/` | 60s |
+| TrueNAS | `http://192.168.1.10/api/v2.0/system/ready` | 120s |
+
+3. Configure a notification channel under **Settings > Notifications**. Connect it to ntfy (Phase 11) once that is running.
+
+---
+
+## Phase 11: Notifications (Ntfy)
+
+Ntfy is a lightweight self-hosted push notification server. Watchtower, Uptime Kuma, and the *arr stack can all route alerts through it, and the ntfy mobile app delivers them to your phone.
+
+1. Confirm ntfy is running: open `http://<server-ip>:2586` — you should see the ntfy web UI.
+2. Install the **ntfy mobile app** on your phone (iOS and Android, available at [ntfy.sh](https://ntfy.sh/)).
+3. In the app, tap **+** and subscribe to your server. Set the server URL to `http://<server-ip>:2586` (or use your Tailscale IP for access outside the house). Subscribe to topics you'll use — e.g., `watchtower`, `uptime-kuma`, `alerts`.
+4. **Connect Uptime Kuma:** In Uptime Kuma go to **Settings > Notifications**, add an ntfy notification with:
+    - **Server URL:** `http://ntfy:2586` (internal Docker URL)
+    - **Topic:** `uptime-kuma`
+    - Click **Test** to confirm delivery to your phone.
+
+---
+
+## Phase 12: Container Update Monitoring (Watchtower)
+
+Watchtower runs in monitor-only mode — it checks for updated container images daily at 4 AM and logs findings but never auto-applies updates. You stay informed without surprise breakage.
+
+1. Watchtower starts automatically with the stack. To trigger an immediate manual scan:
+    ```bash
+    docker exec watchtower /watchtower --run-once
+    ```
+2. To review what updates are available:
+    ```bash
+    docker logs watchtower
+    ```
+3. **To enable ntfy notifications** (after Phase 11 is running): Add to `.env`:
+    ```
+    WATCHTOWER_NOTIFICATION_URL=generic+http://ntfy:2586/watchtower
+    ```
+    Uncomment `WATCHTOWER_NOTIFICATION_URL` in the watchtower `environment:` block in `docker-compose.yml`, then recreate the container:
+    ```bash
+    docker compose up -d watchtower
+    ```
+4. **To apply an available update**, pull the new image and recreate only that container:
+    ```bash
+    docker compose pull <container-name> && docker compose up -d <container-name>
+    ```
+    Check the project's changelog before updating Jellyfin, Sonarr, Radarr, or the *arr stack — they occasionally ship breaking database migrations.
+
+---
+
+## Phase 13: Vaultwarden (Self-Hosted Password Manager)
+
+Vaultwarden is a lightweight, self-hosted Bitwarden-compatible server. All official Bitwarden apps and browser extensions work with it — this is the migration path off LastPass.
+
+> **HTTPS required:** Bitwarden clients will not connect to Vaultwarden over plain HTTP. Set up an NPM proxy host pointing to `http://vaultwarden:80` with a Let's Encrypt certificate (see Phase 4) before creating your account.
+
+1. **Generate an admin token** and add it to `.env`:
+    ```bash
+    openssl rand -base64 48
+    ```
+    ```env
+    VAULTWARDEN_ADMIN_TOKEN=<paste generated token here>
+    ```
+    Recreate the container:
+    ```bash
+    docker compose up -d vaultwarden
+    ```
+    > If `VAULTWARDEN_ADMIN_TOKEN` is not set, the `/admin` panel is disabled entirely — the vault still works, you just can't access admin settings.
+
+2. **Register your account:** Navigate to `https://vaultwarden.home/` and sign up. This creates your personal vault — the admin token is separate and does not give vault access.
+
+3. **Disable new signups** to lock the instance to your account:
+    - Go to `https://vaultwarden.home/admin` (use the token from step 1)
+    - Uncheck **Allow new signups** and save.
+
+4. **Connect Bitwarden clients:** In any Bitwarden-compatible app (browser extension, iOS, Android), go to **Settings > Server URL** and enter your Vaultwarden address:
+    - Local network: `http://192.168.1.20:8888`
+    - Via NPM: `https://vaultwarden.home`
+    - Via Tailscale: `http://<tailscale-ip>:8888`
+
+5. **Migrate from LastPass:**
+    - In LastPass export your vault: **Account Options > Advanced > Export**
+    - In your Bitwarden web vault go to **Tools > Import Data**, select **LastPass (csv)**, and upload the export
+    - Verify all items imported correctly, then delete the export file from your machine
+    - Install the Bitwarden browser extension, log in, and disable the LastPass extension
+    - Full migration guide: [bitwarden.com/help/import-from-lastpass](https://bitwarden.com/help/import-from-lastpass/)

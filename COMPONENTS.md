@@ -146,3 +146,16 @@ Layout is top-down. Pi shelf and Home Assistant sit at the top with open space a
 | Bottom | NAS Node — Rosewill RSV-L4500U | 4U | Heaviest node; bottom placement improves stability. |
 | Bottom | App Server — Rosewill RSV-L4500U | 4U | |
 | Bottom | Desktop / Gaming PC — Rosewill RSV-L4500U | 4U | Bottommost. GPU exhaust vents toward floor — ensure adequate rear clearance. |
+
+---
+
+## Upgrade Path
+
+Future hardware improvements in rough priority order. None are urgent — documented here to capture context and cost benchmarks when decisions come up.
+
+| Priority | Component | Current | Target | Est. Cost | Trigger / Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | Network Switch | TP-Link TL-SG1024DE (1GbE, 24-port) | TP-Link TL-SG3210XHP-M2 (8× 2.5GbE + 2× 10GbE SFP+) | ~$160 | App Server (Z790 UD AX) and NAS (B760 PRO RS) both have 2.5GbE NICs currently capped at 1GbE. No impact on media streaming; bottleneck shows during bulk NAS transfers (~110 MB/s real-world vs ~250 MB/s possible). |
+| 2 | Gaming Desktop — Motherboard | DDR4-era board (existing hardware) | Modern LGA1700 DDR5 motherboard | ~$150–200 | DDR5 RAM (32GB Corsair VENGEANCE RGB, see Desktop Conversion) already purchased and waiting. Upgrade motherboard to unlock it. |
+| 3 | Gaming Desktop — RAM | DDR4 (existing) | 32GB Corsair VENGEANCE RGB DDR5 | Already purchased | Paired with motherboard upgrade above — install both at the same time. The DDR5 kit is on the shelf waiting for the board. |
+| 4 | Router | Asus consumer router | pfSense / OPNsense appliance (e.g., Protectli VP2420) | ~$300–400 | Current Asus + Pi-hole setup is adequate for the lab as-is. Upgrade when VLAN segmentation (IoT isolation, guest network, lab separation) becomes a priority. The TL-SG1024DE already supports 802.1Q VLANs — the router is the only missing piece. |

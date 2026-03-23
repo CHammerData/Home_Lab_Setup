@@ -54,6 +54,59 @@ services:
       - net_admin
       - sys_module
 
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped
+    environment:
+      - TZ=${TIMEZONE}
+    volumes:
+      - ./config/homepage:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 3001:3000
+    networks:
+      - home_lab_net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    container_name: uptime-kuma
+    restart: unless-stopped
+    volumes:
+      - ./config/uptime-kuma:/app/data
+    ports:
+      - 3002:3001
+    networks:
+      - home_lab_net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3001"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    environment:
+      - TZ=${TIMEZONE}
+      - WATCHTOWER_MONITOR_ONLY=true
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INCLUDE_STOPPED=false
+      - WATCHTOWER_SCHEDULE=0 0 4 * * *
+      # To enable ntfy notifications after Phase 11, add to .env:
+      #   WATCHTOWER_NOTIFICATION_URL=generic+http://ntfy:2586/watchtower
+      # Then add it to the environment block above and recreate: docker compose up -d watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - home_lab_net
+
   # -------------------------------------------------------
   # 2. REVERSE PROXY & AUTHENTICATION
   # -------------------------------------------------------
@@ -163,6 +216,23 @@ services:
     networks:
       - home_lab_net
 
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    restart: unless-stopped
+    environment:
+      - LOG_LEVEL=info
+      - TZ=${TIMEZONE}
+    ports:
+      - 8191:8191
+    networks:
+      - home_lab_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8191"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   # -------------------------------------------------------
   # 4. THE *ARR AUTOMATION STACK
   # -------------------------------------------------------
@@ -260,6 +330,27 @@ services:
       - ./config/recyclarr:/config
     networks:
       - home_lab_net
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ./config/bazarr:/config
+      - /path/to/your/nas/data:/data # Update this path (must match Sonarr/Radarr — bazarr writes subtitle files to the media directory)
+    ports:
+      - 6767:6767
+    networks:
+      - home_lab_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6767/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # -------------------------------------------------------
   # 5. MEDIA STREAMING
@@ -383,7 +474,54 @@ services:
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
 
   # -------------------------------------------------------
-  # 7. BACKUP
+  # 7. PERSONAL SERVICES
+  # -------------------------------------------------------
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    environment:
+      - TZ=${TIMEZONE}
+      - ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
+      - SIGNUPS_ALLOWED=false
+      - WEBSOCKET_ENABLED=true
+    volumes:
+      - ./config/vaultwarden:/data
+    ports:
+      - 8888:80
+      - 3012:3012
+    networks:
+      - home_lab_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ntfy:
+    image: binwiederhier/ntfy:latest
+    container_name: ntfy
+    restart: unless-stopped
+    command: serve
+    environment:
+      - TZ=${TIMEZONE}
+      - NTFY_BASE_URL=${NTFY_BASE_URL}
+      - NTFY_UPSTREAM_BASE_URL=https://ntfy.sh
+    volumes:
+      - ./config/ntfy/cache:/var/cache/ntfy
+      - ./config/ntfy:/etc/ntfy
+    ports:
+      - 2586:80
+    networks:
+      - home_lab_net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # -------------------------------------------------------
+  # 8. BACKUP
   # -------------------------------------------------------
   duplicati:
     image: lscr.io/linuxserver/duplicati:latest
